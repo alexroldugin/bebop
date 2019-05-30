@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import getMessage from '../utils/i18n';
 import Candidate from '../components/Candidate';
 import keySequence from '../key_sequences';
@@ -198,4 +197,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Popup));
+export default connect(mapStateToProps, mapDispatchToProps)(Popup);

@@ -1,20 +1,12 @@
 import browser       from 'webextension-polyfill';
 import React         from 'react';
-import createHistory from 'history/createHashHistory';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import {
   applyMiddleware,
   createStore,
 } from 'redux';
-import {
-  ConnectedRouter,
-  routerMiddleware,
-} from 'connected-react-router';
-import {
-  Switch,
-  Route,
-} from 'react-router-dom';
+
 import logger from 'kiroku';
 
 import Popup from './containers/Popup';
@@ -47,18 +39,13 @@ export function start() {
     candidateInit(state);
     keySequenceInit(state);
     actionInit();
-    const history        = createHistory();
     const sagaMiddleware = createSagaMiddleware();
-    const middleware     = applyMiddleware(sagaMiddleware, routerMiddleware(history));
-    const store          = createStore(reducers(history), state, middleware);
+    const middleware     = applyMiddleware(sagaMiddleware);
+    const store          = createStore(reducers(), state, middleware);
     const container      = document.getElementById('container');
     const element = (
       <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <Switch>
-            <Route default component={Popup} />
-          </Switch>
-        </ConnectedRouter>
+        <Popup />
       </Provider>
     );
     return appStart(container, element, sagaMiddleware, rootSaga);

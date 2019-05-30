@@ -1,36 +1,18 @@
 import test                 from 'ava';
 import { mount }            from 'enzyme';
 import React                from 'react';
-import createHistory from 'history/createHashHistory';
 import { Provider } from 'react-redux';
 import {
-  applyMiddleware,
   createStore,
 } from 'redux';
-import {
-  ConnectedRouter,
-  routerMiddleware,
-} from 'connected-react-router';
-import {
-  HashRouter,
-  Switch,
-  Route,
-} from 'react-router-dom';
 
 import Popup from '../../src/containers/Popup';
 import reducers from '../../src/reducers/popup';
 
-const history = createHistory();
-const store = createStore(reducers(history), applyMiddleware(routerMiddleware(history)));
+const store = createStore(reducers());
 const element = (
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      <HashRouter>
-        <Switch>
-          <Route default component={Popup} />
-        </Switch>
-      </HashRouter>
-    </ConnectedRouter>
+    <Popup />
   </Provider>
 );
 

@@ -12,10 +12,6 @@ import {
   all,
 } from 'redux-saga/effects';
 import {
-  router,
-  createHashHistory,
-} from 'redux-saga-router';
-import {
   getPort,
   createPortChannel,
 } from '../utils/port';
@@ -24,7 +20,6 @@ import { query as queryActions } from '../actions';
 import { watchKeySequence } from './key_sequence';
 import { beginningOfLine } from '../cursor';
 
-const history = createHashHistory();
 const portName = `popup-${Date.now()}`;
 export const port = getPort(portName);
 
@@ -303,10 +298,6 @@ function* watchQuit() {
   yield takeLatest('QUIT', close);
 }
 
-function* routerSaga() {
-  yield fork(router, history, {});
-}
-
 export default function* root() {
   yield all([
     fork(watchTabChange),
@@ -321,7 +312,6 @@ export default function* root() {
     fork(watchRequestArg),
     fork(watchQuit),
     fork(watchPort),
-    fork(routerSaga),
     fork(dispatchEmptyQuery),
   ]);
 }
