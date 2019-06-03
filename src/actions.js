@@ -332,6 +332,15 @@ export function find(id = '') {
   return action2Candidate(actionList.find(c => c.id === id));
 }
 
+export function execute(actionId, candidates) {
+  const action = find(actionId);
+  if (action && action.handler) {
+    const f = action.handler;
+    return f.call(this, candidates);
+  }
+  return Promise.resolve();
+}
+
 export function init() {
   register('search'  , searchActions);
   register('link'    , linkActions);

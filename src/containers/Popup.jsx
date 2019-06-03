@@ -9,7 +9,6 @@ import { commandOfSeq } from '../sagas/key_sequence';
 class Popup extends React.Component {
   static get propTypes() {
     return {
-      query:                 PropTypes.string.isRequired,
       candidates:            PropTypes.arrayOf(PropTypes.object).isRequired,
       separators:            PropTypes.arrayOf(PropTypes.object).isRequired,
       index:                 PropTypes.number,
@@ -158,7 +157,6 @@ class Popup extends React.Component {
           className="commandInput"
           ref={(input) => { this.input = input; }}
           type="text"
-          value={this.props.query}
           onChange={e => this.props.handleInputChange(e.target.value)}
           onKeyDown={this.props.handleKeyDown}
           placeholder={getMessage('commandInput_placeholder')}
@@ -172,7 +170,6 @@ class Popup extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    query:              state.query,
     candidates:         state.candidates.items,
     index:              state.candidates.index,
     separators:         state.separators,
@@ -193,7 +190,10 @@ function mapDispatchToProps(dispatch) {
         dispatch({ type: 'KEY_SEQUENCE', payload: keySeq });
       }
     },
-    dispatchQuit: () => dispatch({ type: 'QUIT' }),
+    dispatchQuit: () => {
+      dispatch({ type: 'POPUP_CLEANUP' });
+      dispatch({ type: 'POPUP_QUIT' });
+    },
   };
 }
 

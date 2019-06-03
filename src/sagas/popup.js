@@ -1,4 +1,3 @@
-import browser from 'webextension-polyfill';
 import logger from 'kiroku';
 import { delay } from 'redux-saga';
 import {
@@ -15,10 +14,16 @@ import {
   getPort,
   createPortChannel,
 } from '../utils/port';
-import { sendMessageToActiveContentTabViaBackground } from '../utils/tabs';
-import { query as queryActions } from '../actions';
-import { watchKeySequence } from './key_sequence';
+
+import searchForAllCandidates from '../candidates';
+
+import {
+  query as queryActions,
+  execute as executeBackgroundAction,
+} from '../actions';
 import { beginningOfLine } from '../cursor';
+
+import { sendMessageToActiveContentTab } from '../utils/tabs';
 
 const portName = `popup-${Date.now()}`;
 export const port = getPort(portName);
@@ -28,16 +33,9 @@ export const debounceDelayMs = 100;
 export const modeSelector      = state => state.mode;
 export const candidateSelector = state => state.prev && state.prev.candidate;
 
-export function close() {
-  if (window.parent !== window) {
-    window.parent.postMessage(JSON.stringify({ type: 'CLOSE' }), '*');
-  } else {
-    window.close();
-  }
-}
-
-export function sendMessageToBackground(message) {
-  return browser.runtime.sendMessage(message);
+export function* cleanup() {
+  const message = { type: 'POPUP_CLEANUP' };
+  yield call(sendMessageToActiveContentTab, message);
 }
 
 export function* executeAction(action, candidates) {
@@ -47,17 +45,18 @@ export function* executeAction(action, candidates) {
   try {
     const payload = { actionId: action.id, candidates };
     const message = { type: 'EXECUTE_ACTION', payload };
-    yield call(sendMessageToBackground, message);
-    yield call(sendMessageToActiveContentTabViaBackground, message);
+
+    yield call(executeBackgroundAction, action.id, candidates);
+    yield call(sendMessageToActiveContentTab, message);
   } catch (e) {
     logger.error(e);
   } finally {
-    close();
+    yield call(cleanup);
   }
 }
 
 export function* responseArg(payload) {
-  yield call(sendMessageToBackground, { type: 'RESPONSE_ARG', payload });
+  yield call(executeBackgroundAction, { type: 'RESPONSE_ARG', payload });
 }
 
 export function* dispatchEmptyQuery() {
@@ -70,10 +69,7 @@ export function* searchCandidates({ payload: query }) {
   const mode      = yield select(modeSelector);
   switch (mode) {
     case 'candidate': {
-      const payload = yield call(sendMessageToBackground, {
-        type:    'SEARCH_CANDIDATES',
-        payload: query,
-      });
+      const payload = yield call(searchForAllCandidates, query);
       yield put({ type: 'CANDIDATES', payload });
       break;
     }
@@ -115,7 +111,7 @@ function* watchChangeCandidate() {
   yield takeEvery(actions, function* handleChangeCandidate() {
     const { index, items } = yield select(state => state.candidates);
     const candidate = items[index];
-    sendMessageToActiveContentTabViaBackground({ type: 'CHANGE_CANDIDATE', payload: candidate })
+    sendMessageToActiveContentTab({ type: 'CHANGE_CANDIDATE', payload: candidate })
       .catch(() => {});
   });
 }
@@ -182,6 +178,8 @@ function* watchReturn() {
       candidates: { index, items },
       mode, markedCandidateIds, prev,
     } = yield select(state => state);
+
+    yield put({ type: 'POPUP_CLEANUP' });
     switch (mode) {
       case 'candidate': {
         const candidates = yield getTargetCandidates({ index, items, markedCandidateIds }, true);
@@ -280,29 +278,25 @@ function* watchRequestArg() {
 function* watchTabChange() {
   yield takeLatest('TAB_CHANGED', function* h({ payload = {} }) {
     if (!payload.canFocusToPopup) {
-      close();
+      yield call(cleanup);
     } else {
       yield call(delay, debounceDelayMs);
       document.querySelector('.commandInput').focus();
       const query = yield select(state => state.query);
-      const items = yield call(sendMessageToBackground, {
-        type:    'SEARCH_CANDIDATES',
-        payload: query,
-      });
+      const items = yield call(searchForAllCandidates, query);
       yield put({ type: 'CANDIDATES', payload: items });
     }
   });
 }
 
 function* watchQuit() {
-  yield takeLatest('QUIT', close);
+  yield takeLatest('POPUP_CLEANUP', cleanup);
 }
 
 export default function* root() {
   yield all([
     fork(watchTabChange),
     fork(watchQuery),
-    fork(watchKeySequence),
     fork(watchChangeCandidate),
     fork(watchSelectCandidate),
     fork(watchReturn),

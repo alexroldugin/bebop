@@ -1,5 +1,17 @@
 import browser from 'webextension-polyfill';
 import logger from 'kiroku';
+
+import createSagaMiddleware from 'redux-saga';
+import {
+  applyMiddleware,
+  createStore,
+} from 'redux';
+
+import { wrapStore } from 'webext-redux';
+
+import reducers from './reducers/popup';
+import rootSaga from './sagas/popup';
+
 import search, { init as candidateInit } from './candidates';
 import { init as actionInit, find as findAction } from './actions';
 import {
@@ -8,7 +20,7 @@ import {
   onTabActivated,
   onTabRemoved,
 } from './popup_window';
-import { getActiveContentTab } from './utils/tabs';
+import { getActiveContentTab, sendMessageToActiveContentTab } from './utils/tabs';
 import idb from './utils/indexedDB';
 import { getArgListener, setPostMessageFunction } from './utils/args';
 import {
@@ -18,9 +30,11 @@ import {
 } from './utils/hatebu';
 import migrateOptions from './utils/options_migrator';
 import config from './config';
+import { init as keySequenceInit } from './sagas/key_sequence';
 
 let contentScriptPorts = {};
 let popupPorts         = {};
+let store = null;
 
 if (process.env.NODE_ENV === 'production') {
   logger.setLevel('FATAL');
@@ -68,7 +82,7 @@ export function executeAction(actionId, candidates) {
 
 function toggleContentPopup() {
   const msg = { type: 'TOGGLE_POPUP' };
-  return getActiveContentTab().then(t => browser.tabs.sendMessage(t.id, msg));
+  return sendMessageToActiveContentTab(msg);
 }
 
 function handleContentScriptMessage() {}
@@ -162,6 +176,8 @@ async function loadOptions() {
   migrateOptions(state);
   candidateInit(state);
   actionInit();
+  keySequenceInit(state);
+  return state;
 }
 
 export async function storageChangedListener() {
@@ -173,7 +189,15 @@ export async function init() {
   contentScriptPorts = {};
   popupPorts         = {};
 
-  await loadOptions();
+  const state = await loadOptions();
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware     = applyMiddleware(sagaMiddleware);
+  store                = createStore(reducers(), state, middleware);
+
+  wrapStore(store);
+
+  store.task = sagaMiddleware.run(rootSaga);
+
   try {
     await idb.upgrade(config.dbName, config.dbVersion, db => createObjectStore(db));
     logger.info('create indexedDB');

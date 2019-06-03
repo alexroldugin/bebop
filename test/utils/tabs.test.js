@@ -3,7 +3,6 @@ import nisemono from 'nisemono';
 import {
   getActiveContentTab,
   sendMessageToActiveContentTab,
-  sendMessageToActiveContentTabViaBackground,
 } from '../../src/utils/tabs';
 import { onTabActivated } from '../../src/popup_window';
 
@@ -52,15 +51,8 @@ test('getActiveContentTab returns null if there is no active tab', (t) => {
 });
 
 test('sendMessageToActiveContentTab send message to active tab', (t) => {
-  setup([{ id: 1 }]);
+  setup([{ id: 1, url: 'http://google.com' }]);
   return sendMessageToActiveContentTab({ type: 'MESSAGE_TYPE' }).then(() => {
     t.is(browser.tabs.sendMessage.calls.length, 1);
-  });
-});
-
-test('sendMessageToActiveContentTabViaBackground send message to active tab', (t) => {
-  setup([{ id: 1 }]);
-  return sendMessageToActiveContentTabViaBackground({ type: 'MESSAGE_TYPE' }).then(() => {
-    t.is(browser.runtime.sendMessage.calls.length, 1);
   });
 });

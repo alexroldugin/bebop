@@ -20,10 +20,11 @@ export function getActiveContentTab() {
 }
 
 export function sendMessageToActiveContentTab(msg) {
-  return getActiveContentTab().then(t => browser.tabs.sendMessage(t.id, msg));
-}
-
-export function sendMessageToActiveContentTabViaBackground(msg) {
-  const type = 'SEND_MESSAGE_TO_ACTIVE_CONTENT_TAB';
-  return browser.runtime.sendMessage({ type, payload: msg });
+  return getActiveContentTab().then((t) => {
+    if (t.url.startsWith('chrome://')
+        || t.url.startsWith('about:')) {
+      return Promise.resolve();
+    }
+    return browser.tabs.sendMessage(t.id, msg);
+  });
 }

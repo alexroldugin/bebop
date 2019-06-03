@@ -1,57 +1,63 @@
-import browser       from 'webextension-polyfill';
-import React         from 'react';
+import React from 'react';
+
 import { Provider } from 'react-redux';
+import { Store, applyMiddleware } from 'webext-redux';
 import createSagaMiddleware from 'redux-saga';
-import {
-  applyMiddleware,
-  createStore,
-} from 'redux';
+
+import ReactDOM from 'react-dom';
 
 import logger from 'kiroku';
 
+import { watchKeySequence } from './sagas/key_sequence';
+
 import Popup from './containers/Popup';
-import reducers from './reducers/popup';
-import rootSaga from './sagas/popup';
-import { init as candidateInit } from './candidates';
-import { init as actionInit } from './actions';
-import { init as keySequenceInit } from './sagas/key_sequence';
-import { start as appStart, stop } from './utils/app';
-import migrateOptions from './utils/options_migrator';
 
 if (process.env.NODE_ENV === 'production') {
   logger.setLevel('FATAL');
 }
 
-function updateWidth({ popupWidth }) {
-  const width = popupWidth || 700;
-  document.body.style.width = `${width}px`;
+function stop({ container, store }) {
+  ReactDOM.unmountComponentAtNode(container);
+  store.task.cancel();
 }
 
-function updateTheme({ theme = '' }) {
-  document.documentElement.setAttribute('data-theme', theme);
-}
+export const popupCloseMiddleware = (/* store */) => next => (action) => {
+  if (action.type === 'POPUP_QUIT') {
+    if (window.parent !== window) {
+      window.parent.postMessage(JSON.stringify({ type: 'CLOSE' }), '*');
+    } else {
+      window.close();
+    }
+  } else {
+    next(action);
+  }
+};
 
-export function start() {
-  return browser.storage.local.get().then((state) => {
-    migrateOptions(state);
-    updateWidth(state);
-    updateTheme(state);
-    candidateInit(state);
-    keySequenceInit(state);
-    actionInit();
-    const sagaMiddleware = createSagaMiddleware();
-    const middleware     = applyMiddleware(sagaMiddleware);
-    const store          = createStore(reducers(), state, middleware);
-    const container      = document.getElementById('container');
+export function start({ store }) {
+  const container = document.getElementById('container');
+
+  // wait for the store to connect to the background page
+  return store.ready().then(() => {
+    store.dispatch({ type: 'QUERY', payload: '' });
+
     const element = (
       <Provider store={store}>
         <Popup />
       </Provider>
     );
-    return appStart(container, element, sagaMiddleware, rootSaga);
+    ReactDOM.render(element, container);
+    return { container };
   });
 }
 
 export { stop };
 
-export default start();
+export function createConnectedStore(store) {
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware = [popupCloseMiddleware, sagaMiddleware];
+  const enhancedStore = applyMiddleware(store, ...middleware);
+  enhancedStore.task = sagaMiddleware.run(watchKeySequence);
+  return enhancedStore;
+}
+
+export default start({ store: createConnectedStore(new Store()) });

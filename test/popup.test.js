@@ -1,10 +1,16 @@
 import test from 'ava';
 import nisemono from 'nisemono';
+import createSagaMiddleware from 'redux-saga';
+import { all, fork } from 'redux-saga/effects';
+import { createStore, applyMiddleware } from 'redux';
 import ReactTestUtils from 'react-dom/test-utils';
-import browser from 'webextension-polyfill';
-import app, { start, stop } from '../src/popup';
-import { port } from '../src/sagas/popup';
-import search from '../src/candidates';
+import { start, stop, popupCloseMiddleware } from '../src/popup';
+
+import { init as candidateInit } from '../src/candidates';
+import { init as actionInit } from '../src/actions';
+import reducers from '../src/reducers/popup';
+import rootSaga, { port } from '../src/sagas/popup';
+import { watchKeySequence } from '../src/sagas/key_sequence';
 
 const WAIT_MS = 250;
 const delay  = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -12,11 +18,12 @@ const ENTER = 13;
 const SPC   = 32;
 const TAB   = 9;
 
-app.then(a => stop(a)); // stop default app
+actionInit();
 
 const { close } = window;
-const { sendMessage } = browser.runtime;
+
 let popup = null;
+let store = null;
 
 function code(c) {
   return c.toUpperCase().charCodeAt(0);
@@ -50,22 +57,35 @@ async function setup() {
   document.scrollingElement = { scrollTo: nisemono.func() };
   nisemono.expects(document.scrollingElement.scrollTo).returns();
   window.close = nisemono.func();
-  browser.runtime.sendMessage = ({ type, payload }) => {
-    switch (type) {
-      case 'SEARCH_CANDIDATES':
-        return search(payload);
-      default:
-        return Promise.resolve();
-    }
-  };
-  popup = await start();
+
+  const state = {};
+  candidateInit(state);
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware     = [
+    sagaMiddleware,
+    popupCloseMiddleware,
+  ];
+  store                = createStore(reducers(), state, applyMiddleware(...middleware));
+
+  function* mergedSaga() {
+    yield all([
+      fork(rootSaga),
+      fork(watchKeySequence),
+    ]);
+  }
+  store.task = sagaMiddleware.run(mergedSaga);
+  store.ready = () => Promise.resolve();
+
+  popup = await start({ store });
 }
 
 function restore() {
   document.scrollingElement = null;
   window.close = close;
-  browser.runtime.sendMessage = sendMessage;
-  stop(popup);
+
+  stop({ container: popup.container, store });
+  store = null;
+  popup = null;
 }
 
 test.beforeEach(setup);
@@ -74,6 +94,7 @@ test.afterEach(restore);
 test.serial('popup succeeds in rendering html', async (t) => {
   await delay(WAIT_MS);
   const { document } = window;
+
   const input = document.querySelector('.commandInput');
   t.truthy(input !== null);
   const candidate = document.querySelector('.candidate');
@@ -158,6 +179,7 @@ test.serial('popup selects a action and `click`', async (t) => {
   keyDown(input, code('i'), { c: true });
   await delay(WAIT_MS);
   const candidate = document.querySelector('.candidate');
+  t.truthy(candidate !== null);
   ReactTestUtils.Simulate.click(candidate);
   t.pass();
   await delay(WAIT_MS);
@@ -227,12 +249,69 @@ test.serial('popup handles TAB_CHANGED action re-focus', async (t) => {
   await delay(WAIT_MS);
 });
 
-
-test.serial('popup handles QUIT action re-focus', async (t) => {
+test.serial('popup closes itself on POPUP_QUIT action re-focus', async (t) => {
   await delay(WAIT_MS);
-  port.messageListeners.forEach((l) => {
-    l({ type: 'QUIT' });
-  });
+  const { document } = window;
+  const input = document.querySelector('.commandInput');
+  ReactTestUtils.Simulate.change(input);
+  keyDown(input, code('g'), { c: true });
+  await delay(WAIT_MS);
   t.true(window.close.isCalled);
   await delay(WAIT_MS);
+});
+
+test.serial('popupCloseMiddleware ignores all actions non-equal to POPUP_QUIT', async (t) => {
+  const next = nisemono.func();
+  const action = { type: 'NON_POPUP_QUIT' };
+  const w = window;
+  global.window = nisemono.obj(window);
+  global.window.parent = null;
+
+  popupCloseMiddleware()(next)(action);
+
+  t.true(next.isCalled);
+  t.false(global.window.close.isCalled);
+  t.pass();
+
+  global.window = w;
+});
+
+test.serial('popupCloseMiddleware closes popup-window for popup-button case', async (t) => {
+  const next = nisemono.func();
+  const action = { type: 'POPUP_QUIT' };
+  const w = window;
+  global.window = nisemono.obj(window);
+  global.window.parent = global.window;
+
+  popupCloseMiddleware()(next)(action);
+
+  t.false(next.isCalled);
+  t.true(global.window.close.isCalled);
+  t.pass();
+
+  global.window = w;
+});
+
+test.serial('popupCloseMiddleware posts CLOSE message to window for content-window case', async (t) => {
+  const next = nisemono.func();
+  const action = { type: 'POPUP_QUIT' };
+  const w = window;
+  global.window = nisemono.obj(window);
+  global.window.parent = nisemono.obj(global.window.parent, { only: ['postMessage'] });
+  const { postMessage } = global.window.parent;
+
+  popupCloseMiddleware()(next)(action);
+
+  t.false(next.isCalled);
+  t.false(window.close.isCalled);
+
+  t.true(postMessage.isCalled);
+  t.is(1, postMessage.calls.length);
+  const call = postMessage.calls[0];
+  t.is(2, call.args.length);
+  t.is('{"type":"CLOSE"}', call.args[0]);
+  t.is('*', call.args[1]);
+
+  t.pass();
+  global.window = w;
 });

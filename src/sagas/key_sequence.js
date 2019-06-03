@@ -1,4 +1,4 @@
-import { takeEvery, put } from 'redux-saga/effects';
+import { takeEvery, put, all } from 'redux-saga/effects';
 import * as cursor from '../cursor';
 
 export function dispatchAction(type, payload) {
@@ -7,27 +7,45 @@ export function dispatchAction(type, payload) {
   };
 }
 
+function dispatchActions(actions) {
+  return function* dispatch() {
+    yield all(actions.map(ac => put(ac)));
+  };
+}
+
 /* eslint-disable quote-props */
 export const commandOfSeq = {
-  'C-f':      cursor.forwardChar,
-  'C-b':      cursor.backwardChar,
-  'C-a':      cursor.beginningOfLine,
-  'C-e':      cursor.endOfLine,
-  'C-n':      dispatchAction('NEXT_CANDIDATE'),
-  'C-p':      dispatchAction('PREVIOUS_CANDIDATE'),
-  'C-h':      cursor.deleteBackwardChar,
-  'C-k':      cursor.killLine,
-  up:         dispatchAction('PREVIOUS_CANDIDATE'),
-  down:       dispatchAction('NEXT_CANDIDATE'),
-  tab:        dispatchAction('NEXT_CANDIDATE'),
-  'S-tab':    dispatchAction('PREVIOUS_CANDIDATE'),
-  'return':   dispatchAction('RETURN', { actionIndex: 0 }),
-  'S-return': dispatchAction('RETURN', { actionIndex: 1 }),
-  'C-i':      dispatchAction('LIST_ACTIONS'),
-  'C-SPC':    dispatchAction('MARK_CANDIDATE'),
-  'M-a':      dispatchAction('MARK_ALL_CANDIDATES'),
-  'ESC':      dispatchAction('QUIT'),
-  'C-g':      dispatchAction('QUIT'),
+  'C-f':    cursor.forwardChar,
+  'C-b':    cursor.backwardChar,
+  'C-a':    cursor.beginningOfLine,
+  'C-e':    cursor.endOfLine,
+  'C-n':    dispatchAction('NEXT_CANDIDATE'),
+  'C-p':    dispatchAction('PREVIOUS_CANDIDATE'),
+  'C-h':    cursor.deleteBackwardChar,
+  'C-k':    cursor.killLine,
+  up:       dispatchAction('PREVIOUS_CANDIDATE'),
+  down:     dispatchAction('NEXT_CANDIDATE'),
+  tab:      dispatchAction('NEXT_CANDIDATE'),
+  'S-tab':  dispatchAction('PREVIOUS_CANDIDATE'),
+  'return': dispatchActions([
+    { type: 'RETURN', payload: { actionIndex: 0 } },
+    { type: 'POPUP_QUIT' },
+  ]),
+  'S-return': dispatchActions([
+    { type: 'RETURN', payload: { actionIndex: 1 } },
+    { type: 'POPUP_QUIT' },
+  ]),
+  'C-i':   dispatchAction('LIST_ACTIONS'),
+  'C-SPC': dispatchAction('MARK_CANDIDATE'),
+  'M-a':   dispatchAction('MARK_ALL_CANDIDATES'),
+  'ESC':   dispatchActions([
+    { type: 'POPUP_CLEANUP' },
+    { type: 'POPUP_QUIT' },
+  ]),
+  'C-g': dispatchActions([
+    { type: 'POPUP_CLEANUP' },
+    { type: 'POPUP_QUIT' },
+  ]),
 };
 
 export function* handleKeySequece({ payload }) {

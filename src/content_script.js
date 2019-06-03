@@ -63,6 +63,8 @@ export function messageListener(request) {
       return handleExecuteAction(request.payload);
     case 'TOGGLE_POPUP':
       return handleTogglePopup(request.payload);
+    case 'POPUP_CLEANUP':
+      return handleClose();
     default:
       return null;
   }
