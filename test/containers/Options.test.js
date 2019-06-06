@@ -7,7 +7,7 @@ import { createStore } from 'redux';
 import Options from '../../src/containers/Options';
 import reducers from '../../src/reducers/options';
 
-const store = createStore(reducers);
+const store = createStore(reducers());
 
 const element = (
   <Provider store={store}>

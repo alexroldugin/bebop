@@ -1,10 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import getMessage from '../utils/i18n';
 import Candidate from '../components/Candidate';
 import keySequence from '../key_sequences';
 import { commandOfSeq } from '../sagas/key_sequence';
+
+import {
+  makeSelectCandidatesItems,
+  makeSelectCandidatesIndex,
+  makeSelectScheme,
+  makeSelectMode,
+  makeSelectMarkedCandidateIds,
+  makeSelectSeparators,
+} from '../selectors/popup';
 
 class Popup extends React.Component {
   static get propTypes() {
@@ -168,16 +178,14 @@ class Popup extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    candidates:         state.candidates.items,
-    index:              state.candidates.index,
-    separators:         state.separators,
-    markedCandidateIds: state.markedCandidateIds,
-    mode:               state.mode,
-    scheme:             state.scheme,
-  };
-}
+const mapStateToProps = createStructuredSelector({
+  candidates:         makeSelectCandidatesItems(),
+  index:              makeSelectCandidatesIndex(),
+  separators:         makeSelectSeparators(),
+  markedCandidateIds: makeSelectMarkedCandidateIds(),
+  mode:               makeSelectMode(),
+  scheme:             makeSelectScheme(),
+});
 
 function mapDispatchToProps(dispatch) {
   return {

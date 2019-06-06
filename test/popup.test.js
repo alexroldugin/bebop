@@ -2,14 +2,15 @@ import test from 'ava';
 import nisemono from 'nisemono';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
-import { createStore, applyMiddleware } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 import ReactTestUtils from 'react-dom/test-utils';
 import { start, stop, popupCloseMiddleware } from '../src/popup';
 
 import { init as candidateInit } from '../src/candidates';
 import { init as actionInit } from '../src/actions';
-import reducers from '../src/reducers/popup';
-import rootSaga, { port } from '../src/sagas/popup';
+import popupReducers from '../src/reducers/popup';
+import optionsReducers from '../src/reducers/options';
+import popupSaga, { port } from '../src/sagas/popup';
 import { watchKeySequence } from '../src/sagas/key_sequence';
 
 const WAIT_MS = 250;
@@ -58,18 +59,25 @@ async function setup() {
   nisemono.expects(document.scrollingElement.scrollTo).returns();
   window.close = nisemono.func();
 
-  const state = {};
-  candidateInit(state);
+  const state = {
+    options: {},
+    popup:   {},
+  };
+  candidateInit(state.options);
   const sagaMiddleware = createSagaMiddleware();
   const middleware     = [
     sagaMiddleware,
     popupCloseMiddleware,
   ];
-  store                = createStore(reducers(), state, applyMiddleware(...middleware));
+  const reducers = combineReducers({
+    options: optionsReducers(),
+    popup:   popupReducers(),
+  });
+  store = createStore(reducers, state, applyMiddleware(...middleware));
 
   function* mergedSaga() {
     yield all([
-      fork(rootSaga),
+      fork(popupSaga),
       fork(watchKeySequence),
     ]);
   }

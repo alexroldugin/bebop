@@ -1,12 +1,20 @@
 import test from 'ava';
+
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import createSagaMiddleware from 'redux-saga';
+
 import ReactTestUtils from 'react-dom/test-utils';
-import app, { start, stop } from '../src/options_ui';
+import { start, stop } from '../src/options_ui';
+
+import popupReducers from '../src/reducers/popup';
+import optionsReducers from '../src/reducers/options';
+import rootSaga from '../src/sagas/options';
 
 const WAIT_MS = 250;
 const delay  = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-app.then(a => stop(a)); // stop default app
 let optionsUI = null;
+let store = null;
 
 const { getBoundingClientRect } =  Element.prototype;
 
@@ -22,7 +30,23 @@ function dispatchEvent(name, node, x, y) {
 }
 
 async function setup() {
-  optionsUI = await start();
+  const state = {
+    options: {},
+    popup:   {},
+  };
+
+  const reducers = combineReducers({
+    options: optionsReducers(),
+    popup:   popupReducers(),
+  });
+
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware     = applyMiddleware(sagaMiddleware);
+  store = createStore(reducers, state, middleware);
+  store.ready = () => Promise.resolve();
+  store.task = sagaMiddleware.run(rootSaga);
+
+  optionsUI = await start({ store });
   Element.prototype.getBoundingClientRect = () => ({
     top:    0,
     left:   0,
@@ -35,6 +59,9 @@ async function setup() {
 
 function restore() {
   stop(optionsUI);
+  store.task.cancel();
+  store = null;
+  optionsUI = null;
   Element.prototype.getBoundingClientRect = getBoundingClientRect;
 }
 

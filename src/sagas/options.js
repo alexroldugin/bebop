@@ -8,6 +8,8 @@ import {
   all,
 } from 'redux-saga/effects';
 
+import { optionsSelector } from '../selectors/options';
+
 export function sendMessageToBackground(message) {
   return browser.runtime.sendMessage(message);
 }
@@ -32,28 +34,28 @@ function* watchWidth() {
 
 function* watchOrderOfCandidates() {
   yield takeEvery('CHANGE_ORDER', function* h() {
-    const { orderOfCandidates } = yield select(state => state);
+    const { orderOfCandidates } = yield select(optionsSelector);
     yield browser.storage.local.set({ orderOfCandidates });
   });
 }
 
 function* watchDefaultNumberOfCandidates() {
   yield takeEvery('UPDATE_MAX_RESULTS_FOR_EMPTY', function* h() {
-    const { maxResultsForEmpty } = yield select(state => state);
+    const { maxResultsForEmpty } = yield select(optionsSelector);
     yield browser.storage.local.set({ maxResultsForEmpty });
   });
 }
 
 function* watchEnableCJKMove() {
   yield takeEvery('ENABLE_CJK_MOVE', function* h() {
-    const { enabledCJKMove } = yield select(state => state);
+    const { enabledCJKMove } = yield select(optionsSelector);
     yield browser.storage.local.set({ enabledCJKMove });
   });
 }
 
 function* watchHatenaUserName() {
   yield takeEvery('HATENA_USER_NAME', function* h() {
-    const { hatenaUserName } = yield select(state => state);
+    const { hatenaUserName } = yield select(optionsSelector);
     const message = { type: 'DOWNLOAD_HATEBU', payload: hatenaUserName };
     yield browser.storage.local.set({ hatenaUserName });
     yield call(sendMessageToBackground, message);
@@ -62,7 +64,7 @@ function* watchHatenaUserName() {
 
 function* watchTheme() {
   yield takeEvery('SET_THEME', function* h() {
-    const { theme } = yield select(state => state);
+    const { theme } = yield select(optionsSelector);
     yield browser.storage.local.set({ theme });
   });
 }

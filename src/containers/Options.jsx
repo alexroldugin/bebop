@@ -2,9 +2,19 @@ import browser from 'webextension-polyfill';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import getMessage from '../utils/i18n';
 import { defaultOrder } from '../reducers/options';
+
+import {
+  makeSelectPopupWidth,
+  makeSelectOrderOfCandidates,
+  makeSelectMaxResultsForEmpty,
+  makeSelectEnabledCJKMove,
+  makeSelectHatenaUserName,
+  makeSelectTheme,
+} from '../selectors/options';
 
 const dragIcon = browser.extension.getURL('images/drag.png');
 
@@ -168,16 +178,14 @@ class Options extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    popupWidth:         state.popupWidth,
-    orderOfCandidates:  state.orderOfCandidates,
-    maxResultsForEmpty: state.maxResultsForEmpty,
-    enabledCJKMove:     state.enabledCJKMove,
-    hatenaUserName:     state.hatenaUserName,
-    theme:              state.theme,
-  };
-}
+const mapStateToProps = createStructuredSelector({
+  popupWidth:         makeSelectPopupWidth(),
+  orderOfCandidates:  makeSelectOrderOfCandidates(),
+  maxResultsForEmpty: makeSelectMaxResultsForEmpty(),
+  enabledCJKMove:     makeSelectEnabledCJKMove(),
+  hatenaUserName:     makeSelectHatenaUserName(),
+  theme:              makeSelectTheme(),
+});
 
 function mapDispatchToProps(dispatch) {
   return {

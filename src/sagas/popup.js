@@ -25,13 +25,24 @@ import { beginningOfLine } from '../cursor';
 
 import { sendMessageToActiveContentTab } from '../utils/tabs';
 
+import {
+  makeSelectPopup,
+  makeSelectQuery,
+  makeSelectMode,
+  makeSelectScheme,
+  makeSelectSchemeEnum,
+  makeSelectPrev,
+  makeSelectCandidate,
+  makeSelectCandidatesItems,
+  makeSelectCandidatesIndex,
+  makeSelectSeparators,
+  makeSelectMarkedCandidateIds,
+} from '../selectors/popup';
+
 const portName = `popup-${Date.now()}`;
 export const port = getPort(portName);
 
 export const debounceDelayMs = 100;
-
-export const modeSelector      = state => state.mode;
-export const candidateSelector = state => state.prev && state.prev.candidate;
 
 export function* cleanup() {
   const message = { type: 'POPUP_CLEANUP' };
@@ -65,8 +76,8 @@ export function* dispatchEmptyQuery() {
 
 export function* searchCandidates({ payload: query }) {
   yield call(delay, debounceDelayMs);
-  const candidate = yield select(candidateSelector);
-  const mode      = yield select(modeSelector);
+  const candidate = yield select(makeSelectCandidate());
+  const mode      = yield select(makeSelectMode());
   switch (mode) {
     case 'candidate': {
       const payload = yield call(searchForAllCandidates, query);
@@ -80,7 +91,7 @@ export function* searchCandidates({ payload: query }) {
       break;
     }
     case 'arg': {
-      const values = yield select(state => state.scheme.enum);
+      const values = yield select(makeSelectSchemeEnum());
       const items = (values || []).filter(o => o.label.includes(query));
       yield put({
         type:    'CANDIDATES',
@@ -109,7 +120,8 @@ function* watchPort() {
 function* watchChangeCandidate() {
   const actions = ['QUERY', 'NEXT_CANDIDATE', 'PREVIOUS_CANDIDATE'];
   yield takeEvery(actions, function* handleChangeCandidate() {
-    const { index, items } = yield select(state => state.candidates);
+    const index = yield select(makeSelectCandidatesIndex());
+    const items = yield select(makeSelectCandidatesItems());
     const candidate = items[index];
     sendMessageToActiveContentTab({ type: 'CHANGE_CANDIDATE', payload: candidate })
       .catch(() => {});
@@ -121,7 +133,7 @@ export function* normalizeCandidate(candidate) {
     return null;
   }
   if (candidate.type === 'search') {
-    const q = yield select(state => state.query);
+    const q = yield select(makeSelectQuery);
     return Object.assign({}, candidate, { args: [q] });
   }
   return Object.assign({}, candidate);
@@ -146,7 +158,8 @@ export function* getTargetCandidates({ markedCandidateIds, items, index }, needN
 
 function* watchSelectCandidate() {
   yield takeEvery('SELECT_CANDIDATE', function* handleSelectCandidate({ payload }) {
-    const { mode, prev } = yield select(state => state);
+    const mode = yield select(makeSelectMode());
+    const prev = yield select(makeSelectPrev());
     let action;
     switch (mode) {
       case 'candidate': {
@@ -174,10 +187,11 @@ function* watchSelectCandidate() {
 
 function* watchReturn() {
   yield takeEvery('RETURN', function* handleReturn({ payload: { actionIndex } }) {
-    const {
-      candidates: { index, items },
-      mode, markedCandidateIds, prev,
-    } = yield select(state => state);
+    const index = yield select(makeSelectCandidatesIndex());
+    const items = yield select(makeSelectCandidatesItems());
+    const mode = yield select(makeSelectMode());
+    const markedCandidateIds = yield select(makeSelectMarkedCandidateIds());
+    const prev = yield select(makeSelectPrev());
 
     yield put({ type: 'POPUP_CLEANUP' });
     switch (mode) {
@@ -195,8 +209,8 @@ function* watchReturn() {
         break;
       }
       case 'arg': {
-        const type = yield select(state => state.scheme.type);
-        let payload = yield select(state => state.query);
+        const { type } = yield select(makeSelectScheme());
+        let payload = yield select(makeSelectQuery());
         if (type === 'object') {
           payload = yield getTargetCandidates({ index, items, markedCandidateIds });
         }
@@ -212,10 +226,14 @@ function* watchReturn() {
 function* watchListActions() {
   /* eslint-disable object-curly-newline */
   yield takeEvery('LIST_ACTIONS', function* handleListActions() {
-    const {
-      candidates: { index, items },
-      query, separators, markedCandidateIds, mode, prev,
-    } = yield select(state => state);
+    const index = yield select(makeSelectCandidatesIndex());
+    const items = yield select(makeSelectCandidatesItems());
+    const query = yield select(makeSelectQuery());
+    const separators = yield select(makeSelectSeparators());
+    const markedCandidateIds = yield select(makeSelectMarkedCandidateIds());
+    const mode = yield select(makeSelectMode());
+    const prev = yield select(makeSelectPrev());
+
     switch (mode) {
       case 'candidate': {
         const candidate = yield normalizeCandidate(items[index]);
@@ -242,7 +260,10 @@ function* watchListActions() {
 
 function* watchMarkCandidate() {
   yield takeEvery('MARK_CANDIDATE', function* handleMarkCandidate() {
-    const { mode, candidates: { index, items } } = yield select(state => state);
+    const mode = yield select(makeSelectMode());
+    const items = yield select(makeSelectCandidatesItems());
+    const index = yield select(makeSelectCandidatesIndex());
+
     if (mode === 'action') {
       return;
     }
@@ -253,7 +274,7 @@ function* watchMarkCandidate() {
 
 function* watchMarkAllCandidates() {
   yield takeEvery('MARK_ALL_CANDIDATES', function* handleMarkAllCandidates() {
-    const { mode, candidates: { index, items } } = yield select(state => state);
+    const { mode, candidates: { index, items } } = yield select(makeSelectPopup());
     if (mode === 'action') {
       return;
     }
@@ -282,7 +303,7 @@ function* watchTabChange() {
     } else {
       yield call(delay, debounceDelayMs);
       document.querySelector('.commandInput').focus();
-      const query = yield select(state => state.query);
+      const query = yield select(makeSelectQuery());
       const items = yield call(searchForAllCandidates, query);
       yield put({ type: 'CANDIDATES', payload: items });
     }

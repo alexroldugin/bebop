@@ -9,8 +9,8 @@ import {
 
 import { wrapStore } from 'webext-redux';
 
-import reducers from './reducers/popup';
-import rootSaga from './sagas/popup';
+import globalRootReducers from './reducers/global';
+import globalRootSaga from './sagas/global';
 
 import search, { init as candidateInit } from './candidates';
 import { init as actionInit, find as findAction } from './actions';
@@ -192,11 +192,11 @@ export async function init() {
   const state = await loadOptions();
   const sagaMiddleware = createSagaMiddleware();
   const middleware     = applyMiddleware(sagaMiddleware);
-  store                = createStore(reducers(), state, middleware);
+  store                = createStore(globalRootReducers(), state, middleware);
 
   wrapStore(store);
 
-  store.task = sagaMiddleware.run(rootSaga);
+  store.task = sagaMiddleware.run(globalRootSaga);
 
   try {
     await idb.upgrade(config.dbName, config.dbVersion, db => createObjectStore(db));

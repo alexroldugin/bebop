@@ -74,7 +74,7 @@ const theme = (state = '', action) => {
 };
 
 
-const rootReducer = combineReducers({
+const rootReducer = () => combineReducers({
   popupWidth,
   orderOfCandidates,
   maxResultsForEmpty,

@@ -39,7 +39,6 @@ export function start({ store }) {
   // wait for the store to connect to the background page
   return store.ready().then(() => {
     store.dispatch({ type: 'QUERY', payload: '' });
-
     const element = (
       <Provider store={store}>
         <Popup />
