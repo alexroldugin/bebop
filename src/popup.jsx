@@ -11,6 +11,7 @@ import logger from 'kiroku';
 import { watchKeySequence } from './sagas/key_sequence';
 
 import Popup from './containers/Popup';
+import ThemeProvider from './containers/ThemeProvider';
 
 if (process.env.NODE_ENV === 'production') {
   logger.setLevel('FATAL');
@@ -41,7 +42,9 @@ export function start({ store }) {
     store.dispatch({ type: 'QUERY', payload: '' });
     const element = (
       <Provider store={store}>
-        <Popup />
+        <ThemeProvider>
+          <Popup />
+        </ThemeProvider>
       </Provider>
     );
     ReactDOM.render(element, container);
