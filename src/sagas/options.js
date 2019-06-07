@@ -8,11 +8,15 @@ import {
   all,
 } from 'redux-saga/effects';
 
-import { optionsSelector } from '../selectors/options';
+import { downloadHatebu } from '../utils/hatebu';
 
-export function sendMessageToBackground(message) {
-  return browser.runtime.sendMessage(message);
-}
+import {
+  makeSelectHatenaUserName,
+  makeSelectEnabledCJKMove,
+  makeSelectMaxResultsForEmpty,
+  makeSelectOrderOfCandidates,
+  makeSelectTheme,
+} from '../selectors/options';
 
 function* dispatchPopupWidth() {
   const { popupWidth } = yield browser.storage.local.get('popupWidth');
@@ -21,7 +25,9 @@ function* dispatchPopupWidth() {
 
 function* dispatchHatenaUserName() {
   const { hatenaUserName } = yield browser.storage.local.get('hatenaUserName');
-  yield put({ type: 'HATENA_USER_NAME', payload: hatenaUserName });
+  if (hatenaUserName) {
+    yield put({ type: 'HATENA_USER_NAME', payload: hatenaUserName });
+  }
 }
 
 function* watchWidth() {
@@ -34,37 +40,36 @@ function* watchWidth() {
 
 function* watchOrderOfCandidates() {
   yield takeEvery('CHANGE_ORDER', function* h() {
-    const { orderOfCandidates } = yield select(optionsSelector);
+    const orderOfCandidates = yield select(makeSelectOrderOfCandidates());
     yield browser.storage.local.set({ orderOfCandidates });
   });
 }
 
 function* watchDefaultNumberOfCandidates() {
   yield takeEvery('UPDATE_MAX_RESULTS_FOR_EMPTY', function* h() {
-    const { maxResultsForEmpty } = yield select(optionsSelector);
+    const maxResultsForEmpty = yield select(makeSelectMaxResultsForEmpty());
     yield browser.storage.local.set({ maxResultsForEmpty });
   });
 }
 
 function* watchEnableCJKMove() {
   yield takeEvery('ENABLE_CJK_MOVE', function* h() {
-    const { enabledCJKMove } = yield select(optionsSelector);
+    const enabledCJKMove = yield select(makeSelectEnabledCJKMove());
     yield browser.storage.local.set({ enabledCJKMove });
   });
 }
 
 function* watchHatenaUserName() {
   yield takeEvery('HATENA_USER_NAME', function* h() {
-    const { hatenaUserName } = yield select(optionsSelector);
-    const message = { type: 'DOWNLOAD_HATEBU', payload: hatenaUserName };
+    const hatenaUserName = yield select(makeSelectHatenaUserName());
     yield browser.storage.local.set({ hatenaUserName });
-    yield call(sendMessageToBackground, message);
+    yield call(downloadHatebu, hatenaUserName);
   });
 }
 
 function* watchTheme() {
   yield takeEvery('SET_THEME', function* h() {
-    const { theme } = yield select(optionsSelector);
+    const theme = yield select(makeSelectTheme());
     yield browser.storage.local.set({ theme });
   });
 }

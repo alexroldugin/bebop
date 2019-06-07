@@ -89,3 +89,13 @@ export async function fetchBookmarks() {
     return [];
   }
 }
+
+export function downloadHatebu(userName) {
+  try {
+    if (needDownload(userName)) {
+      downloadBookmarks(userName);
+    }
+  } catch (e) {
+    logger.trace(e);
+  }
+}

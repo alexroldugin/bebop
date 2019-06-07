@@ -25,8 +25,6 @@ import idb from './utils/indexedDB';
 import { getArgListener, setPostMessageFunction } from './utils/args';
 import {
   createObjectStore,
-  needDownload,
-  downloadBookmarks,
 } from './utils/hatebu';
 import migrateOptions from './utils/options_migrator';
 import config from './config';
@@ -115,16 +113,6 @@ function activatedListener(payload) {
   setTimeout(() => onTabActivated(payload), 10);
 }
 
-function downloadHatebu(userName) {
-  try {
-    if (needDownload()) {
-      downloadBookmarks(userName);
-    }
-  } catch (e) {
-    logger.trace(e);
-  }
-}
-
 export function messageListener(request) {
   switch (request.type) {
     case 'SEND_MESSAGE_TO_ACTIVE_CONTENT_TAB': {
@@ -146,10 +134,6 @@ export function messageListener(request) {
     case 'RESPONSE_ARG': {
       const listener = getArgListener();
       listener(request.payload);
-      break;
-    }
-    case 'DOWNLOAD_HATEBU': {
-      downloadHatebu(request.payload);
       break;
     }
     default:
@@ -188,7 +172,6 @@ export async function init() {
   setPostMessageFunction(postMessageToPopup);
   contentScriptPorts = {};
   popupPorts         = {};
-
   const state = await loadOptions();
   const sagaMiddleware = createSagaMiddleware();
   const middleware     = applyMiddleware(sagaMiddleware);
@@ -200,11 +183,9 @@ export async function init() {
 
   try {
     await idb.upgrade(config.dbName, config.dbVersion, db => createObjectStore(db));
-    logger.info('create indexedDB');
   } catch (e) {
     logger.info(e);
   }
-
   browser.windows.onFocusChanged.addListener(onWindowFocusChanged);
   browser.runtime.onConnect.addListener(connectListener);
   browser.tabs.onActivated.addListener(activatedListener);
@@ -212,7 +193,6 @@ export async function init() {
   browser.runtime.onMessage.addListener(messageListener);
   browser.commands.onCommand.addListener(commandListener);
   browser.storage.onChanged.addListener(storageChangedListener);
-
   logger.info('bebop is initialized.');
 }
 
