@@ -14,20 +14,20 @@ const defaultState = {
   },
 };
 
-export const makeSelectPopup      = (state = {}) => state.popup || defaultState;
+export const selectRoot      = (state = {}) => state.popup || defaultState;
 
 export const makeSelectQuery      = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.query,
 );
 
 export const makeSelectMode       = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.mode,
 );
 
 export const makeSelectCandidates = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.candidates,
 );
 
@@ -42,27 +42,27 @@ export const makeSelectCandidatesIndex = () => createSelector(
 );
 
 export const makeSelectSeparators  = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.separators,
 );
 
 export const makeSelectMarkedCandidateIds = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.markedCandidateIds,
 );
 
 export const makeSelectCandidate  = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.prev && popup.prev.candidate,
 );
 
 export const makeSelectPrev  = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.prev,
 );
 
 export const makeSelectScheme     = () => createSelector(
-  makeSelectPopup,
+  selectRoot,
   popup => popup.scheme,
 );
 
@@ -71,4 +71,4 @@ export const makeSelectSchemeEnum = () => createSelector(
   scheme => scheme.enum,
 );
 
-export default makeSelectPopup;
+export default selectRoot;
