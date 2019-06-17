@@ -9,7 +9,7 @@ import {
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
   makeSelectScheme,
-  makeSelectMode,
+  selectMode,
   makeSelectMarkedCandidateIds,
   makeSelectSeparators,
 } from '../selectors/popup';
@@ -19,7 +19,7 @@ export const mapStateToProps = createStructuredSelector({
   index:              makeSelectCandidatesIndex(),
   separators:         makeSelectSeparators(),
   markedCandidateIds: makeSelectMarkedCandidateIds(),
-  mode:               makeSelectMode(),
+  mode:               selectMode,
   scheme:             makeSelectScheme(),
 });
 

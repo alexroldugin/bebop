@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 
 const defaultState = {
   query:      '',
-  mode:       '',
   candidates: {
     items: [],
     index: 0,
@@ -21,10 +20,7 @@ export const makeSelectQuery      = () => createSelector(
   popup => popup.query,
 );
 
-export const makeSelectMode       = () => createSelector(
-  selectRoot,
-  popup => popup.mode,
-);
+export const selectMode       = () => 'candidate';
 
 export const makeSelectCandidates = () => createSelector(
   selectRoot,

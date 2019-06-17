@@ -20,7 +20,7 @@ test('<HomePage /> | props | with default state', (t) => {
     index:              0,
     separators:         [],
     markedCandidateIds: {},
-    mode:               '',
+    mode:               'candidate',
     scheme:             {
       enum: [],
     },
@@ -33,7 +33,7 @@ test('<HomePage /> | props | with default state specified directly', (t) => {
     index:              0,
     separators:         [],
     markedCandidateIds: {},
-    mode:               '',
+    mode:               'candidate',
     scheme:             { enum: [] },
   }, mapStateToProps({
     popup: {
@@ -43,7 +43,6 @@ test('<HomePage /> | props | with default state specified directly', (t) => {
       },
       separators:         [],
       markedCandidateIds: {},
-      mode:               '',
       scheme:             {
         enum: [],
       },
@@ -57,7 +56,7 @@ test('<HomePage /> | props | with state with one candidate', (t) => {
     index:              15,
     separators:         [],
     markedCandidateIds: {},
-    mode:               '',
+    mode:               'candidate',
     scheme:             { enum: [] },
   }, mapStateToProps({
     popup: {
@@ -67,7 +66,6 @@ test('<HomePage /> | props | with state with one candidate', (t) => {
       },
       separators:         [],
       markedCandidateIds: {},
-      mode:               '',
       scheme:             {
         enum: [],
       },
@@ -81,7 +79,7 @@ test('<HomePage /> | props | with state with two candidates and mode', (t) => {
     index:              15,
     separators:         [],
     markedCandidateIds: {},
-    mode:               'some mode name',
+    mode:               'candidate',
     scheme:             { enum: [] },
   }, mapStateToProps({
     popup: {
@@ -91,7 +89,6 @@ test('<HomePage /> | props | with state with two candidates and mode', (t) => {
       },
       separators:         [],
       markedCandidateIds: {},
-      mode:               'some mode name',
       scheme:             {
         enum: [],
       },
