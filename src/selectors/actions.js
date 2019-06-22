@@ -6,8 +6,9 @@ import {
 } from './popup';
 
 import { query as queryActions } from '../actions';
+import { uncirculateIndex } from '../utils/array';
 
-const defaultState = {
+export const defaultState = {
   query:      '',
   candidates: { index: 0 },
 };
@@ -23,19 +24,20 @@ export const makeSelectQuery = () => createSelector(
 
 export const selectMode = () => 'actions';
 
-export const makeSelectCandidatesItems = () => createSelector(
+export const makeSelectCandidatesItems = (qa = queryActions) => createSelector(
   makeSelectQuery(),
   makeSelectHomePageCandidatesItems(),
   makeSelectHomePageCandidatesIndex(),
   (query, items, index) => {
     const candidate = items[index];
-    return queryActions(candidate.type, query);
+    return candidate ? qa(candidate.type, query) : [];
   },
 );
 
-export const makeSelectCandidatesIndex = () => createSelector(
+export const makeSelectCandidatesIndex = (qa = queryActions) => createSelector(
   selectRoot,
-  root => root.candidates.index,
+  makeSelectCandidatesItems(qa),
+  (root, items) => uncirculateIndex(items, root.candidates.index),
 );
 
 export const makeSelectSeparators  = () => createSelector(
@@ -43,7 +45,7 @@ export const makeSelectSeparators  = () => createSelector(
   makeSelectHomePageCandidatesIndex(),
   (items, index) => {
     const candidate = items[index];
-    return [{ label: `Actions for "${candidate.label}"`, index: 0 }];
+    return candidate ? [{ label: `Actions for "${candidate.label}"`, index: 0 }] : [];
   },
 );
 

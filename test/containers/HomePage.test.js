@@ -53,7 +53,7 @@ test('<HomePage /> | props | with default state specified directly', (t) => {
 test('<HomePage /> | props | with state with one candidate', (t) => {
   t.deepEqual({
     candidates:         [candidate],
-    index:              15,
+    index:              0,
     separators:         [],
     markedCandidateIds: {},
     mode:               'candidate',
@@ -62,7 +62,7 @@ test('<HomePage /> | props | with state with one candidate', (t) => {
     popup: {
       candidates: {
         items: [candidate],
-        index: 15,
+        index: 0,
       },
       separators:         [],
       markedCandidateIds: {},
@@ -73,10 +73,10 @@ test('<HomePage /> | props | with state with one candidate', (t) => {
   }));
 });
 
-test('<HomePage /> | props | with state with two candidates and mode', (t) => {
+test('<HomePage /> | props | with state with two candidates and mode | index=0', (t) => {
   t.deepEqual({
     candidates:         [candidate, candidate],
-    index:              15,
+    index:              0,
     separators:         [],
     markedCandidateIds: {},
     mode:               'candidate',
@@ -85,7 +85,53 @@ test('<HomePage /> | props | with state with two candidates and mode', (t) => {
     popup: {
       candidates: {
         items: [candidate, candidate],
-        index: 15,
+        index: 0,
+      },
+      separators:         [],
+      markedCandidateIds: {},
+      scheme:             {
+        enum: [],
+      },
+    },
+  }));
+});
+
+test('<HomePage /> | props | with state with two candidates and mode | index=1', (t) => {
+  t.deepEqual({
+    candidates:         [candidate, candidate],
+    index:              1,
+    separators:         [],
+    markedCandidateIds: {},
+    mode:               'candidate',
+    scheme:             { enum: [] },
+  }, mapStateToProps({
+    popup: {
+      candidates: {
+        items: [candidate, candidate],
+        index: 1,
+      },
+      separators:         [],
+      markedCandidateIds: {},
+      scheme:             {
+        enum: [],
+      },
+    },
+  }));
+});
+
+test('<HomePage /> | props | with state with two candidates and mode | index=2', (t) => {
+  t.deepEqual({
+    candidates:         [candidate, candidate],
+    index:              0,
+    separators:         [],
+    markedCandidateIds: {},
+    mode:               'candidate',
+    scheme:             { enum: [] },
+  }, mapStateToProps({
+    popup: {
+      candidates: {
+        items: [candidate, candidate],
+        index: 2,
       },
       separators:         [],
       markedCandidateIds: {},

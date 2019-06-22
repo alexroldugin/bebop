@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 
-const defaultState = {
+import { uncirculateIndex } from '../utils/array';
+
+export const defaultState = {
   query:      '',
   candidates: {
     items: [],
@@ -13,14 +15,14 @@ const defaultState = {
   },
 };
 
-export const selectRoot      = (state = {}) => state.popup || defaultState;
+export const selectRoot = (state = {}) => state.popup || defaultState;
 
-export const makeSelectQuery      = () => createSelector(
+export const makeSelectQuery = () => createSelector(
   selectRoot,
   popup => popup.query,
 );
 
-export const selectMode       = () => 'candidate';
+export const selectMode = () => 'candidate';
 
 export const makeSelectCandidates = () => createSelector(
   selectRoot,
@@ -34,7 +36,8 @@ export const makeSelectCandidatesItems = () => createSelector(
 
 export const makeSelectCandidatesIndex = () => createSelector(
   makeSelectCandidates(),
-  candidates => candidates.index,
+  makeSelectCandidatesItems(),
+  (candidates, items) => uncirculateIndex(items, candidates.index),
 );
 
 export const makeSelectSeparators  = () => createSelector(
@@ -47,15 +50,15 @@ export const makeSelectMarkedCandidateIds = () => createSelector(
   popup => popup.markedCandidateIds,
 );
 
-export const makeSelectCandidate  = () => createSelector(
-  selectRoot,
-  popup => popup.prev && popup.prev.candidate,
-);
+// export const makeSelectCandidate  = () => createSelector(
+//   selectRoot,
+//   popup => popup.prev && popup.prev.candidate,
+// );
 
-export const makeSelectPrev  = () => createSelector(
-  selectRoot,
-  popup => popup.prev,
-);
+// export const makeSelectPrev  = () => createSelector(
+//   selectRoot,
+//   popup => popup.prev,
+// );
 
 export const makeSelectScheme     = () => createSelector(
   selectRoot,
