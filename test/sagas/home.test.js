@@ -1,11 +1,12 @@
 import test from 'ava';
-import { put } from 'redux-saga/effects';
+import { put, call } from 'redux-saga/effects';
 import {
-  dispatchEmptyQuery,
-  executeAction,
   normalizeCandidate,
   getTargetCandidates,
-} from '../../src/sagas/popup';
+  searchCandidates,
+} from '../../src/sagas/home';
+
+import searchForAllCandidates from '../../src/candidates';
 
 const items = [{
   id:         'google-search-test',
@@ -14,23 +15,6 @@ const items = [{
   args:       ['test'],
   faviconUrl: null,
 }];
-
-test('dispatchEmptyQuery saga', (t) => {
-  const gen = dispatchEmptyQuery();
-  t.deepEqual(gen.next().value, put({ type: 'QUERY', payload: '' }));
-});
-
-test('executeAction', (t) => {
-  const action = { handler: () => Promise.resolve() };
-  const gen = executeAction(action, items);
-  gen.next();
-  gen.next();
-  t.pass();
-
-  const noActionGen = executeAction(null, items);
-  noActionGen.next();
-  t.pass();
-});
 
 test('normalizeCandidate', (t) => {
   const noCandidateGen = normalizeCandidate(null);
@@ -44,4 +28,19 @@ test('getTargetCandidates', (t) => {
   const markedCandidateIds = { 'google-search-test': true };
   const gen = getTargetCandidates({ markedCandidateIds, items, index: 0 });
   t.deepEqual(gen.next().value, items);
+});
+
+test('searchCandidates generator runs candidates\' search', (t) => {
+  const query = 'some query string';
+  const action = { payload: query };
+  const searchPayload = 'some payload data';
+  const gen = searchCandidates(action);
+  gen.next(); // debounce delay
+  t.deepEqual(call(searchForAllCandidates, query), gen.next().value);
+  t.deepEqual(
+    put({ type: 'CANDIDATES', payload: searchPayload }),
+    gen.next(searchPayload).value,
+  );
+  t.true(gen.next().done);
+  t.pass();
 });
