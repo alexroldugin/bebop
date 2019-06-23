@@ -3,12 +3,16 @@ import {
   all,
 } from 'redux-saga/effects';
 
-import popupRootSaga from './popup';
 import optionsRootSaga from './options';
+import executorRootSaga from './executor';
+import locationChangeSagaFactory from './location_change';
 
-export default function* root() {
-  yield all([
-    fork(popupRootSaga),
-    fork(optionsRootSaga),
-  ]);
+export default function rootFactory(store) {
+  return function* root() {
+    yield all([
+      fork(locationChangeSagaFactory(store)),
+      fork(optionsRootSaga),
+      fork(executorRootSaga),
+    ]);
+  };
 }
