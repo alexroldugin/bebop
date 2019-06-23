@@ -4,9 +4,7 @@ import {
   init,
   getContentScriptPorts,
   getPopupPorts,
-  messageListener,
   commandListener,
-  storageChangedListener,
 } from '../src/background';
 import { getPopupWindow } from '../src/popup_window';
 import createPort from './create_port';
@@ -132,26 +130,8 @@ test.serial('manage content script ports', (t) => {
   t.is(getContentScriptPorts().length, 0);
 });
 
-test('messageListener', (t) => {
-  messageListener({ type: 'SEND_MESSAGE_TO_ACTIVE_CONTENT_TAB' });
-  messageListener({ type: 'SEARCH_CANDIDATES', payload: '' });
-  messageListener({
-    type:    'EXECUTE_ACTION',
-    payload: {
-      actionId:   'google-search',
-      candidates: [],
-    },
-  });
-  t.pass();
-});
-
 test('commandListener', (t) => {
   commandListener('toggle_popup_window');
   commandListener('toggle_content_popup');
-  t.pass();
-});
-
-test('storageChangedListener', async (t) => {
-  await storageChangedListener();
   t.pass();
 });

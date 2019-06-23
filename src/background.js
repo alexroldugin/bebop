@@ -5,15 +5,21 @@ import createSagaMiddleware from 'redux-saga';
 import {
   applyMiddleware,
   createStore,
+  compose,
 } from 'redux';
 
 import { wrapStore } from 'webext-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
-import globalRootReducers from './reducers/global';
-import globalRootSaga from './sagas/global';
+import createReducer from './reducers/global';
+import rootSagaFactory from './sagas/global';
+
+import getSagaInjectors from './utils/saga_injectors';
+import getReducerInjectors from './utils/reducer_injectors';
 
 import search, { init as candidateInit } from './candidates';
 import { init as actionInit, find as findAction } from './actions';
+
 import {
   toggle as togglePopupWindow,
   onWindowFocusChanged,
@@ -98,6 +104,16 @@ function connectListener(port) {
   } else if (name.startsWith('popup')) {
     popupPorts[name] = port;
     port.onDisconnect.addListener(() => {
+      store.dispatch({
+        type:    LOCATION_CHANGE,
+        payload: {
+          location: { pathname: '/' },
+          action:   'POP',
+        },
+      });
+      getReducerInjectors(store).ejectAllReducers();
+      getSagaInjectors(store).ejectAllSagas();
+
       delete popupPorts[name];
       postMessageToContentScript('POPUP_CLOSE');
     });
@@ -172,14 +188,26 @@ export async function init() {
   setPostMessageFunction(postMessageToPopup);
   contentScriptPorts = {};
   popupPorts         = {};
-  const state = await loadOptions();
+
+  const options = await loadOptions();
   const sagaMiddleware = createSagaMiddleware();
-  const middleware     = applyMiddleware(sagaMiddleware);
-  store                = createStore(globalRootReducers(), state, middleware);
+  const middlewares = [sagaMiddleware];
+  const enhancers = [applyMiddleware(...middlewares)];
+  store = createStore(
+    createReducer(),
+    { options },
+    compose(...enhancers),
+  );
 
   wrapStore(store);
 
-  store.task = sagaMiddleware.run(globalRootSaga);
+  // Extensions
+  store.injectedReducers = {}; // Reducer registry
+  store.injectedSagas = {}; // Saga registry
+  store.runSaga = sagaMiddleware.run;
+  store.runSaga(rootSagaFactory(store));
+
+  // getSagaInjectors(store).injectSaga('root', rootSagaFactory(store));
 
   try {
     await idb.upgrade(config.dbName, config.dbVersion, db => createObjectStore(db));
