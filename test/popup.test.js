@@ -3,14 +3,21 @@ import nisemono from 'nisemono';
 import createSagaMiddleware from 'redux-saga';
 import { all, fork } from 'redux-saga/effects';
 import { combineReducers, createStore, applyMiddleware } from 'redux';
+
+import { connectRouter } from 'connected-react-router';
+
 import ReactTestUtils from 'react-dom/test-utils';
-import { start, stop, popupCloseMiddleware } from '../src/popup';
+import {
+  start, stop, popupCloseMiddleware, setupStoreSagas,
+} from '../src/popup';
+
+import history from '../src/utils/history';
 
 import { init as candidateInit } from '../src/candidates';
 import { init as actionInit } from '../src/actions';
 import popupReducers from '../src/reducers/popup';
 import optionsReducers from '../src/reducers/options';
-import popupSaga, { port } from '../src/sagas/popup';
+import homeSaga from '../src/sagas/home';
 import { watchKeySequence } from '../src/sagas/key_sequence';
 
 const WAIT_MS = 250;
@@ -70,6 +77,7 @@ async function setup() {
     popupCloseMiddleware,
   ];
   const reducers = combineReducers({
+    router:  connectRouter(history),
     options: optionsReducers(),
     popup:   popupReducers(),
   });
@@ -77,12 +85,13 @@ async function setup() {
 
   function* mergedSaga() {
     yield all([
-      fork(popupSaga),
+      fork(homeSaga),
       fork(watchKeySequence),
     ]);
   }
   store.task = sagaMiddleware.run(mergedSaga);
   store.ready = () => Promise.resolve();
+  store.dispatch({ type: 'QUERY', payload: '' });
 
   popup = await start({ store });
 }
@@ -204,59 +213,6 @@ test.serial('popup marks candidates', async (t) => {
   await delay(WAIT_MS);
 });
 
-test.serial('popup cannot marks actions', async (t) => {
-  await delay(WAIT_MS);
-  const { document } = window;
-  const input = document.querySelector('.commandInput');
-  keyDown(input, code('i'), { c: true });
-  await delay(WAIT_MS);
-  keyDown(input, SPC, { c: true });
-  await delay(WAIT_MS);
-  const markedCandidate = document.querySelector('.candidate.marked');
-  t.truthy(markedCandidate === null);
-  await delay(WAIT_MS);
-});
-
-test.serial('popup handles REQUEST_ARG message', async (t) => {
-  await delay(WAIT_MS);
-  const input = document.querySelector('.commandInput');
-  port.messageListeners.forEach((l) => {
-    l({
-      type:    'REQUEST_ARG',
-      payload: {
-        scheme: {
-          type:    'number',
-          title:   'arg title',
-          minimum: 0,
-          maximum: 10,
-        },
-      },
-    });
-    keyDown(input, code('1'));
-    keyDown(input, ENTER);
-  });
-  await delay(WAIT_MS);
-  t.pass();
-});
-
-test.serial('popup handles TAB_CHANGED action and close', async (t) => {
-  await delay(WAIT_MS);
-  port.messageListeners.forEach((l) => {
-    l({ type: 'TAB_CHANGED' });
-  });
-  t.pass();
-  await delay(WAIT_MS);
-});
-
-test.serial('popup handles TAB_CHANGED action re-focus', async (t) => {
-  await delay(WAIT_MS);
-  port.messageListeners.forEach((l) => {
-    l({ type: 'TAB_CHANGED', payload: { canFocusToPopup: true } });
-  });
-  t.pass();
-  await delay(WAIT_MS);
-});
-
 test.serial('popup closes itself on POPUP_QUIT action re-focus', async (t) => {
   await delay(WAIT_MS);
   const { document } = window;
@@ -322,4 +278,12 @@ test.serial('popupCloseMiddleware posts CLOSE message to window for content-wind
 
   t.pass();
   global.window = w;
+});
+
+test.serial('setupStoreSagas injects keys and navigator sagas', (t) => {
+  const storeWithNoSaga = createStore((state = {}) => state, {});
+  const storeWithSaga = setupStoreSagas(storeWithNoSaga);
+  t.truthy(storeWithSaga.injectedSagas);
+  t.truthy(storeWithSaga.injectedSagas.keys);
+  t.truthy(storeWithSaga.injectedSagas.navigator);
 });
