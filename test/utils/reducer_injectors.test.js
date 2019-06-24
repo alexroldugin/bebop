@@ -1,14 +1,14 @@
 import test from 'ava';
 import nisemono from 'nisemono';
 
-import * as reducerInjectors from '../../src/utils/reducer_injectors';
-import * as globalReducers from '../../src/reducers/global';
-
-const {
+import getInjectors, {
   noop,
   injectReducerFactory,
   ejectAllReducersFactory,
-} = reducerInjectors;
+  content,
+} from '../../src/utils/reducer_injectors';
+
+import * as globalReducers from '../../src/reducers/global';
 
 const createReducer = globalReducers.default;
 
@@ -30,22 +30,22 @@ test.beforeEach(setup);
 test.afterEach(restore);
 
 test.serial('getInjectors returns injector/ejector', (t) => {
-  reducerInjectors.injectReducerFactory = nisemono.func();
-  nisemono.expects(reducerInjectors.injectReducerFactory).returns(5);
+  content.injectReducerFactory = nisemono.func();
+  nisemono.expects(content.injectReducerFactory).returns(5);
 
-  reducerInjectors.ejectAllReducersFactory = nisemono.func();
-  nisemono.expects(reducerInjectors.ejectAllReducersFactory).returns(12);
+  content.ejectAllReducersFactory = nisemono.func();
+  nisemono.expects(content.ejectAllReducersFactory).returns(12);
 
-  const injectors = reducerInjectors.default(store);
+  const injectors = getInjectors(store);
 
   t.deepEqual(injectors, { injectReducer: 5, ejectAllReducers: 12 });
 
-  t.true(reducerInjectors.injectReducerFactory.isCalled);
-  t.true(reducerInjectors.ejectAllReducersFactory.isCalled);
+  t.true(content.injectReducerFactory.isCalled);
+  t.true(content.ejectAllReducersFactory.isCalled);
 
   // revert mocking
-  reducerInjectors.injectReducerFactory = injectReducerFactory;
-  reducerInjectors.ejectAllReducersFactory = ejectAllReducersFactory;
+  content.injectReducerFactory = injectReducerFactory;
+  content.ejectAllReducersFactory = ejectAllReducersFactory;
 });
 
 test.serial('injects reducer for first time', (t) => {

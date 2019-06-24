@@ -1,5 +1,7 @@
 import createReducer from '../reducers/global';
 
+let m;
+
 export const noop = (state = {}) => state;
 
 export function injectReducerFactory(store) {
@@ -25,7 +27,15 @@ export function ejectAllReducersFactory(store) {
 
 export default function getInjectors(store) {
   return {
-    injectReducer:    exports.injectReducerFactory(store),
-    ejectAllReducers: exports.ejectAllReducersFactory(store),
+    injectReducer:    m.injectReducerFactory(store),
+    ejectAllReducers: m.ejectAllReducersFactory(store),
   };
 }
+
+m = {
+  noop,
+  injectReducerFactory,
+  ejectAllReducersFactory,
+};
+
+export const content = m;

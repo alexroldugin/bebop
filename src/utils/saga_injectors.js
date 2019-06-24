@@ -1,3 +1,5 @@
+let m;
+
 export function ejectSagaFactory(store) {
   return function ejectSaga(key) {
     if (Reflect.has(store.injectedSagas, key)) {
@@ -21,7 +23,7 @@ export function ejectAllSagasFactory(store) {
 }
 
 export function injectSagaFactory(store) {
-  const ejector = exports.ejectSagaFactory(store);
+  const ejector = m.ejectSagaFactory(store);
   return function injectSaga(key, saga, args) {
     ejector(key);
     /* eslint-disable no-param-reassign */
@@ -35,8 +37,16 @@ export function injectSagaFactory(store) {
 
 export default function getInjectors(store) {
   return {
-    injectSaga:    exports.injectSagaFactory(store),
-    ejectSaga:     exports.ejectSagaFactory(store),
-    ejectAllSagas: exports.ejectAllSagasFactory(store),
+    injectSaga:    m.injectSagaFactory(store),
+    ejectSaga:     m.ejectSagaFactory(store),
+    ejectAllSagas: m.ejectAllSagasFactory(store),
   };
 }
+
+m = {
+  injectSagaFactory,
+  ejectSagaFactory,
+  ejectAllSagasFactory,
+};
+
+export const content = m;
