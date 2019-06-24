@@ -32,14 +32,22 @@ class PopupPage extends React.Component {
 
   constructor() {
     super();
-    this.focusInput = () => this.input.focus();
+    this.input = null;
+    this.setTextInputRef = (element) => {
+      this.input = element;
+    };
+    this.focusTextInput = () => {
+      if (this.input) this.input.focus();
+    };
   }
 
   componentDidMount() {
-    window.addEventListener('focus', this.focusInput);
+    window.addEventListener('focus', this.focusTextInput);
     window.addEventListener('blur', this.props.dispatchQuit);
+    this.focusTextInput();
+
     this.timer = setTimeout(() => {
-      // this.focusInput();
+      this.focusTextInput();
       if (document.scrollingElement) {
         document.scrollingElement.scrollTo(0, 0);
       }
@@ -59,7 +67,7 @@ class PopupPage extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('focus', this.focusInput);
+    window.removeEventListener('focus', this.focusTextInput);
     window.removeEventListener('blur', this.props.dispatchQuit);
     clearTimeout(this.timer);
   }
@@ -152,7 +160,7 @@ class PopupPage extends React.Component {
       >
         <input
           className="commandInput"
-          ref={(input) => { this.input = input; }}
+          ref={this.setTextInputRef}
           type="text"
           onChange={e => this.props.handleInputChange(e.target.value)}
           onKeyDown={this.props.handleKeyDown}
