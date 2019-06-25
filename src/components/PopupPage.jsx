@@ -6,6 +6,7 @@ import Candidate from './Candidate';
 class PopupPage extends React.Component {
   static get propTypes() {
     return {
+      query:                 PropTypes.string,
       candidates:            PropTypes.arrayOf(PropTypes.object).isRequired,
       separators:            PropTypes.arrayOf(PropTypes.object).isRequired,
       index:                 PropTypes.number,
@@ -27,6 +28,7 @@ class PopupPage extends React.Component {
   static get defaultProps() {
     return {
       index: null,
+      query: '',
     };
   }
 
@@ -162,6 +164,7 @@ class PopupPage extends React.Component {
           className="commandInput"
           ref={this.setTextInputRef}
           type="text"
+          defaultValue={this.props.query}
           onChange={e => this.props.handleInputChange(e.target.value)}
           onKeyDown={this.props.handleKeyDown}
           placeholder={getMessage('commandInput_placeholder')}

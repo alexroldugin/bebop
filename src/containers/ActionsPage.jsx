@@ -6,6 +6,7 @@ import keySequence from '../key_sequences';
 import { commandOfSeq } from '../sagas/key_sequence';
 
 import {
+  makeSelectQuery,
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
   selectScheme,
@@ -15,6 +16,7 @@ import {
 } from '../selectors/actions';
 
 export const mapStateToProps = createStructuredSelector({
+  query:              makeSelectQuery(),
   candidates:         makeSelectCandidatesItems(),
   index:              makeSelectCandidatesIndex(),
   separators:         makeSelectSeparators(),
