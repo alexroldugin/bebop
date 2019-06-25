@@ -111,6 +111,7 @@ function connectListener(port) {
           action:   'POP',
         },
       });
+      store.dispatch({ type: 'QUERY', payload: '' });
       getReducerInjectors(store).ejectAllReducers();
       getSagaInjectors(store).ejectAllSagas();
 
