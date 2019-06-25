@@ -3,11 +3,20 @@ import { put, takeEvery } from 'redux-saga/effects';
 import {
   watchReturn,
   handleReturn,
+  watchQuery,
+  handleQuery,
 } from '../../src/sagas/actions';
 
 test('watches for RETURN', (t) => {
   const gen = watchReturn();
   t.deepEqual(gen.next().value, takeEvery('RETURN', handleReturn));
+
+  t.true(gen.next().done);
+});
+
+test('watches for QUERY', (t) => {
+  const gen = watchQuery();
+  t.deepEqual(gen.next().value, takeEvery('QUERY', handleQuery));
 
   t.true(gen.next().done);
 });
@@ -31,6 +40,15 @@ test('handles RETURN', (t) => {
   t.deepEqual(
     gen.next(candidates).value,
     put({ type: 'EXECUTE_ACTION', payload: { action: actionsItems[actionsIndex], candidates } }),
+  );
+  t.true(gen.next().done);
+});
+
+test('handles QUERY by redirecting to CANDIDATES', (t) => {
+  const gen = handleQuery();
+  t.deepEqual(
+    gen.next().value,
+    put({ type: 'CANDIDATES', payload: { items: [], separators: [] } }),
   );
   t.true(gen.next().done);
 });

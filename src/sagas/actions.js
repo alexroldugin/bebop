@@ -60,12 +60,22 @@ export function* handleReturn() {
   yield put({ type: 'EXECUTE_ACTION', payload: { action, candidates } });
 }
 
+export function* handleQuery() {
+  // only redirect QUERY -> CANDIDATES to affect candidatesIndex reducer
+  yield put({ type: 'CANDIDATES', payload: { items: [], separators: [] } });
+}
+
 export function* watchReturn() {
   yield takeEvery('RETURN', handleReturn);
+}
+
+export function* watchQuery() {
+  yield takeEvery('QUERY', handleQuery);
 }
 
 export default function* root() {
   yield all([
     fork(watchReturn),
+    fork(watchQuery),
   ]);
 }
