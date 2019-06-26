@@ -37,7 +37,7 @@ export function* normalizeCandidate(candidate) {
     return null;
   }
   if (candidate.type === 'search') {
-    const q = yield select(makeSelectQuery);
+    const q = yield select(makeSelectQuery());
     return Object.assign({}, candidate, { args: [q] });
   }
   return Object.assign({}, candidate);
