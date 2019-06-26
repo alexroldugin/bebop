@@ -1,6 +1,7 @@
 import {
   call,
   takeEvery,
+  put,
 } from 'redux-saga/effects';
 
 import { LOCATION_CHANGE } from 'connected-react-router';
@@ -26,10 +27,12 @@ export function handleLocationChangeFactory(store) {
       case '/':
         yield call(reducerInjectors.injectReducer, 'popup', homeRootReducers());
         yield call(sagaInjectors.injectSaga, 'home', homeRootSaga);
+        yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
         break;
       case '/actions':
         yield call(reducerInjectors.injectReducer, 'actions', actionsReducers());
         yield call(sagaInjectors.injectSaga, 'actions', actionsRootSaga);
+        yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
         break;
       default:
         break;

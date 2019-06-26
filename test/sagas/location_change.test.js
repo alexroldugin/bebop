@@ -1,7 +1,7 @@
 import test from 'ava';
 import nisemono from 'nisemono';
 
-import { call } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 
 import homeRootReducers from '../../src/reducers/home';
 import homeRootSaga from '../../src/sagas/home';
@@ -42,12 +42,12 @@ test('handles \'/\' location', (t) => {
 
   const got = gen.next(ri).value;
   const expected = call(ri.injectReducer, 'popup', homeRootReducers());
-  t.truthy(got.CALL, 'calls some function');
-  t.is(got.CALL.fn, expected.CALL.fn, 'same function as we expected');
-  t.deepEqual(got.CALL.args.length, expected.CALL.args.length, 'with same args count');
-  t.deepEqual(got.CALL.args[0], expected.CALL.args[0], 'with \'popup\' first argument');
+  delete got.CALL.args[1];
+  delete expected.CALL.args[1];
+  t.deepEqual(got, expected);
 
   t.deepEqual(gen.next(si).value, call(si.injectSaga, 'home', homeRootSaga));
+  t.deepEqual(gen.next().value, put({ type: 'PAGE_INJECTED', payload: '/' }));
 
   t.true(gen.next().done);
 });
@@ -71,6 +71,7 @@ test('handles \'/actions\' location', (t) => {
   t.deepEqual(got, expected);
 
   t.deepEqual(gen.next(si).value, call(si.injectSaga, 'actions', actionsRootSaga));
+  t.deepEqual(gen.next().value, put({ type: 'PAGE_INJECTED', payload: '/actions' }));
 
   t.true(gen.next().done);
 });
