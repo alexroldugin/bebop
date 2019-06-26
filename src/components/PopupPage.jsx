@@ -47,8 +47,6 @@ class PopupPage extends React.Component {
     window.addEventListener('focus', this.focusTextInput);
     window.addEventListener('blur', this.props.dispatchQuit);
     this.focusTextInput();
-    // When initial state, notify handleInputChange to load candidates list
-    this.props.handleInputChange(this.props.query);
 
     this.timer = setTimeout(() => {
       this.focusTextInput();

@@ -1,6 +1,4 @@
 import test      from 'ava';
-import { mount } from 'enzyme';
-import nisemono  from 'nisemono';
 import React     from 'react';
 import render    from 'react-test-renderer';
 
@@ -209,54 +207,4 @@ const runTestTemplateFunction = (name, {
       },
     },
   );
-
-  test(`<PopupPage /> | ${mode} | handleInputChange called on mount`, (t) => {
-    const handleInputChange = nisemono.func();
-    const query = `query in ${mode}-mode`;
-    const element = (
-      <PopupPage
-        query={query}
-        candidates={[]}
-        index={0}
-        separators={[]}
-        markedCandidateIds={{}}
-        mode={mode}
-        scheme={{ enum: [] }}
-
-        handleSelectCandidate={() => {}}
-        handleInputChange={handleInputChange}
-        handleKeyDown={() => {}}
-        dispatchQuit={() => {}}
-      />
-    );
-
-    mount(element);
-
-    t.is(handleInputChange.calls.length, 1);
-    t.deepEqual(handleInputChange.calls[0].args, [query]);
-  });
-
-  test(`<PopupPage /> | ${mode} | handleInputChange called on mount with no query`, (t) => {
-    const handleInputChange = nisemono.func();
-    const element = (
-      <PopupPage
-        candidates={[]}
-        index={0}
-        separators={[]}
-        markedCandidateIds={{}}
-        mode={mode}
-        scheme={{ enum: [] }}
-
-        handleSelectCandidate={() => {}}
-        handleInputChange={handleInputChange}
-        handleKeyDown={() => {}}
-        dispatchQuit={() => {}}
-      />
-    );
-
-    mount(element);
-
-    t.is(handleInputChange.calls.length, 1);
-    t.deepEqual(handleInputChange.calls[0].args, ['']);
-  });
 });
