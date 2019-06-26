@@ -9,13 +9,9 @@ import {
 } from 'redux';
 
 import { wrapStore } from 'webext-redux';
-import { LOCATION_CHANGE } from 'connected-react-router';
 
 import createReducer from './reducers/global';
 import rootSagaFactory from './sagas/global';
-
-import getSagaInjectors from './utils/saga_injectors';
-import getReducerInjectors from './utils/reducer_injectors';
 
 import search, { init as candidateInit } from './candidates';
 import { init as actionInit, find as findAction } from './actions';
@@ -104,16 +100,7 @@ function connectListener(port) {
   } else if (name.startsWith('popup')) {
     popupPorts[name] = port;
     port.onDisconnect.addListener(() => {
-      store.dispatch({
-        type:    LOCATION_CHANGE,
-        payload: {
-          location: { pathname: '/' },
-          action:   'POP',
-        },
-      });
-      store.dispatch({ type: 'QUERY', payload: '' });
-      getReducerInjectors(store).ejectAllReducers();
-      getSagaInjectors(store).ejectAllSagas();
+      store.dispatch({ type: 'POPUP_CLOSED' });
 
       delete popupPorts[name];
       postMessageToContentScript('POPUP_CLOSE');
@@ -207,8 +194,6 @@ export async function init() {
   store.injectedSagas = {}; // Saga registry
   store.runSaga = sagaMiddleware.run;
   store.runSaga(rootSagaFactory(store));
-
-  // getSagaInjectors(store).injectSaga('root', rootSagaFactory(store));
 
   try {
     await idb.upgrade(config.dbName, config.dbVersion, db => createObjectStore(db));
