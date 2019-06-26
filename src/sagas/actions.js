@@ -73,9 +73,14 @@ export function* watchQuery() {
   yield takeEvery('QUERY', handleQuery);
 }
 
+export function* dispatchEmptyQuery() {
+  yield put({ type: 'QUERY', payload: '' });
+}
+
 export default function* root() {
   yield all([
     fork(watchReturn),
     fork(watchQuery),
+    fork(dispatchEmptyQuery),
   ]);
 }

@@ -5,6 +5,7 @@ import {
   handleReturn,
   watchQuery,
   handleQuery,
+  dispatchEmptyQuery,
 } from '../../src/sagas/actions';
 
 test('watches for RETURN', (t) => {
@@ -49,6 +50,15 @@ test('handles QUERY by redirecting to CANDIDATES', (t) => {
   t.deepEqual(
     gen.next().value,
     put({ type: 'CANDIDATES', payload: { items: [], separators: [] } }),
+  );
+  t.true(gen.next().done);
+});
+
+test('dispatches empty QUERY', (t) => {
+  const gen = dispatchEmptyQuery();
+  t.deepEqual(
+    gen.next().value,
+    put({ type: 'QUERY', payload: '' }),
   );
   t.true(gen.next().done);
 });
