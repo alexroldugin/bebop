@@ -6,6 +6,7 @@ import {
 import optionsRootSaga from './options';
 import executorRootSaga from './executor';
 import locationChangeSagaFactory from './location_change';
+import lifeCycleSagaFactory from './lifecycle';
 
 export default function rootFactory(store) {
   return function* root() {
@@ -13,6 +14,7 @@ export default function rootFactory(store) {
       fork(locationChangeSagaFactory(store)),
       fork(optionsRootSaga),
       fork(executorRootSaga),
+      fork(lifeCycleSagaFactory(store)),
     ]);
   };
 }
