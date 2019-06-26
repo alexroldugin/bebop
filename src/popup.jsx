@@ -45,9 +45,8 @@ if (process.env.NODE_ENV === 'production') {
   logger.setLevel('FATAL');
 }
 
-export function stop({ container, store }) {
+export function stop({ container }) {
   ReactDOM.unmountComponentAtNode(container);
-  store.task.cancel();
 }
 
 export const popupCloseMiddleware = (/* store */) => next => (action) => {
