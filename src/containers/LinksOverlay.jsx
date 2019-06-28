@@ -11,7 +11,7 @@ import {
   makeSelectCandidatesItemsLinks,
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
-} from '../selectors/popup';
+} from '../selectors/home';
 
 export class LinksOverlayComponent extends React.Component {
   static get propTypes() {

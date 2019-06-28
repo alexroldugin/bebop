@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect';
 import {
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
-} from '../selectors/popup';
+} from '../selectors/home';
 
 export class CurrentLinkHighlighterOverlayComponent extends React.Component {
   static get propTypes() {

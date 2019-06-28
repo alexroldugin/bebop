@@ -18,7 +18,7 @@ import {
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
   makeSelectMarkedCandidateIds,
-} from '../selectors/popup';
+} from '../selectors/home';
 
 export const debounceDelayMs = 100;
 

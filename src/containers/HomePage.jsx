@@ -13,7 +13,7 @@ import {
   selectMode,
   makeSelectMarkedCandidateIds,
   makeSelectSeparators,
-} from '../selectors/popup';
+} from '../selectors/home';
 
 export const mapStateToProps = createStructuredSelector({
   query:              makeSelectQuery(),

@@ -12,7 +12,7 @@ import {
   makeSelectMarkedCandidateIds,
   makeSelectScheme,
   makeSelectSchemeEnum,
-} from '../../src/selectors/popup';
+} from '../../src/selectors/home';
 
 let selectQuery = null;
 let selectSeparators = null;

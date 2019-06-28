@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 import {
   makeSelectCandidatesIndex as makeSelectHomePageCandidatesIndex,
   makeSelectCandidatesItems as makeSelectHomePageCandidatesItems,
-} from './popup';
+} from './home';
 
 import { query as queryActions } from '../actions';
 import { uncirculateIndex } from '../utils/array';

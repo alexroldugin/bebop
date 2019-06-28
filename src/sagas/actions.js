@@ -16,7 +16,7 @@ import {
   makeSelectCandidatesItems as makeSelectHomeCandidatesItems,
   makeSelectCandidatesIndex as makeSelectHomeCandidatesIndex,
   makeSelectMarkedCandidateIds as makeSelectHomeMarkedCandidateIds,
-} from '../selectors/popup';
+} from '../selectors/home';
 
 export function* normalizeCandidate(candidate) {
   if (!candidate) {

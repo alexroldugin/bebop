@@ -6,7 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import ReactTestUtils from 'react-dom/test-utils';
 import { start, stop } from '../src/options_ui';
 
-import popupReducers from '../src/reducers/popup';
+import popupReducers from '../src/reducers/home';
 import optionsReducers from '../src/reducers/options';
 import rootSaga from '../src/sagas/options';
 

@@ -15,7 +15,7 @@ import history from '../src/utils/history';
 
 import { init as candidateInit } from '../src/candidates';
 import { init as actionInit } from '../src/actions';
-import popupReducers from '../src/reducers/popup';
+import popupReducers from '../src/reducers/home';
 import optionsReducers from '../src/reducers/options';
 import homeSaga from '../src/sagas/home';
 import { watchKeySequence } from '../src/sagas/key_sequence';
