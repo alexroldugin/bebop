@@ -4,7 +4,7 @@ import { includes } from './utils/string';
 
 export const HIGHLIGHTER_ID    = 'bebop-highlighter';
 export const LINK_MARKER_CLASS = 'bebop-link-marker';
-const MARKER_SIZE = 12;
+export const MARKER_SIZE = 12;
 
 const SELECTOR = [
   'a',
@@ -20,7 +20,19 @@ const dummyHrefs = [
   './',
 ];
 
-function reduce(method) {
+function getElementRect(element) {
+  const rect = element.getBoundingClientRect();
+  const left = rect.left + window.pageXOffset;
+  const top  = rect.top + window.pageYOffset;
+  return {
+    left,
+    top,
+    width:  rect.width,
+    height: rect.height,
+  };
+}
+
+export function reduce(method) {
   return Array.prototype.reduce.apply(window.frames, [
     (acc, f) => {
       try {
@@ -79,33 +91,39 @@ export function getAnchorLabel(element) {
 }
 
 function buttonLink(element, id, index) {
+  const rect = getElementRect(element);
   return {
     id,
     url:   element.target || '',
     label: getButtonLabel(element),
     role:  'button',
     index,
+    rect,
   };
 }
 
 function inputLink(element, id, index) {
+  const rect = getElementRect(element);
   return {
     id,
     url:   element.target || '',
     label: element.value,
     role:  'button',
     index,
+    rect,
   };
 }
 
 function anchorLink(element, id, index) {
   const url = getAnchorUrl(element);
+  const rect = getElementRect(element);
   return {
     id,
     url,
     label: getAnchorLabel(element),
     role:  url ? 'link' : 'button',
     index,
+    rect,
   };
 }
 
@@ -212,18 +230,6 @@ function getContainerDisplayedRect() {
     right:  pageXOffset + innerWidth,
     top:    pageYOffset,
     bottom: pageYOffset + innerHeight,
-  };
-}
-
-function getElementRect(element) {
-  const rect = element.getBoundingClientRect();
-  const left = rect.left + window.pageXOffset;
-  const top  = rect.top + window.pageYOffset;
-  return {
-    left,
-    top,
-    width:  rect.width,
-    height: rect.height,
   };
 }
 

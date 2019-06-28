@@ -65,6 +65,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   'https://example.org/',
     label: 'normal link',
     role:  'link',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[1], {
     id:    'link-1',
@@ -72,6 +78,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   'https://example.org/relative',
     label: 'relative link',
     role:  'link',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[2], {
     id:    'link-2',
@@ -79,6 +91,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   'https://outside.com/',
     label: 'no protocol link',
     role:  'link',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[3], {
     id:    'link-3',
@@ -86,6 +104,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'some action',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[4], {
     id:    'link-4',
@@ -93,6 +117,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   'https://example.org/',
     label: 'title',
     role:  'link',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[5], {
     id:    'link-5',
@@ -100,6 +130,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'text',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[6], {
     id:    'link-6',
@@ -107,6 +143,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'title',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[7], {
     id:    'link-7',
@@ -114,6 +156,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'input button',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[8], {
     id:    'link-8',
@@ -121,6 +169,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'input submit',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
   t.deepEqual(candidates[9], {
     id:    'link-9',
@@ -128,6 +182,12 @@ test.serial('search returns visible and clickable links', (t) => {
     url:   '',
     label: 'aria-label',
     role:  'button',
+    rect:  {
+      left:   0,
+      top:    0,
+      width:  0,
+      height: 0,
+    },
   });
 });
 
