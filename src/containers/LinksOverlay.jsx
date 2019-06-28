@@ -44,6 +44,7 @@ export class LinksOverlayComponent extends React.Component {
 
         return (
           <img
+            key={link.id}
             alt={link.title}
             src={url}
             style={style}
