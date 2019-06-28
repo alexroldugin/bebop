@@ -25,7 +25,7 @@ export function handleLocationChangeFactory(store) {
 
     switch (location.pathname) {
       case '/':
-        yield call(reducerInjectors.injectReducer, 'popup', homeRootReducers());
+        yield call(reducerInjectors.injectReducer, 'home', homeRootReducers());
         yield call(sagaInjectors.injectSaga, 'home', homeRootSaga);
         yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
         break;

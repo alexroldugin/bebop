@@ -41,7 +41,7 @@ test('handles \'/\' location', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, 'popup', homeRootReducers());
+  const expected = call(ri.injectReducer, 'home', homeRootReducers());
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);
