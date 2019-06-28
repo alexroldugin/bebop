@@ -21,14 +21,15 @@ class PopupPage extends React.Component {
         title:   PropTypes.string,
         minimum: PropTypes.number,
         maximum: PropTypes.number,
-      }).isRequired,
+      }),
     };
   }
 
   static get defaultProps() {
     return {
-      index: null,
-      query: '',
+      index:  null,
+      query:  '',
+      scheme: { type: 'object' },
     };
   }
 
