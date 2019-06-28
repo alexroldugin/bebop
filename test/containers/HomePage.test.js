@@ -30,7 +30,7 @@ test('<HomePage /> | props | with default state', (t) => {
 
 test('<HomePage /> | props | with default state specified directly', (t) => {
   t.deepEqual(mapStateToProps({
-    popup: {
+    home: {
       query:      'query value',
       candidates: {
         items: [],
@@ -55,7 +55,7 @@ test('<HomePage /> | props | with default state specified directly', (t) => {
 
 test('<HomePage /> | props | with state with one candidate', (t) => {
   t.deepEqual(mapStateToProps({
-    popup: {
+    home: {
       query:      'query',
       candidates: {
         items: [candidate],
@@ -80,7 +80,7 @@ test('<HomePage /> | props | with state with one candidate', (t) => {
 
 test('<HomePage /> | props | with state with two candidates and mode | index=0', (t) => {
   t.deepEqual(mapStateToProps({
-    popup: {
+    home: {
       query:      'query',
       candidates: {
         items: [candidate, candidate],
@@ -105,7 +105,7 @@ test('<HomePage /> | props | with state with two candidates and mode | index=0',
 
 test('<HomePage /> | props | with state with two candidates and mode | index=1', (t) => {
   t.deepEqual(mapStateToProps({
-    popup: {
+    home: {
       query:      'value',
       candidates: {
         items: [candidate, candidate],
@@ -130,7 +130,7 @@ test('<HomePage /> | props | with state with two candidates and mode | index=1',
 
 test('<HomePage /> | props | with state with two candidates and mode | index=2', (t) => {
   t.deepEqual(mapStateToProps({
-    popup: {
+    home: {
       query:      'value',
       candidates: {
         items: [candidate, candidate],

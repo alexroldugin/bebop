@@ -79,7 +79,7 @@ test('checks selectors with non-default custom state', (t) => {
       enum: [0, 1, 2, 3],
     },
   };
-  const state = { popup: root };
+  const state = { home: root };
   t.deepEqual(selectRoot(state), root);
   t.is(selectMode(state), 'candidate');
   t.is(selectQuery(state), root.query);
@@ -116,7 +116,7 @@ test('checks links list based on candidates list', (t) => {
       ],
     },
   };
-  const state = { popup: root };
+  const state = { home: root };
   t.deepEqual(
     selectCandidatesItemsLinks(state),
     root.candidates.items.filter(c => c.type === 'link'),

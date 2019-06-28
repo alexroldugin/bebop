@@ -15,7 +15,7 @@ import history from '../src/utils/history';
 
 import { init as candidateInit } from '../src/candidates';
 import { init as actionInit } from '../src/actions';
-import popupReducers from '../src/reducers/home';
+import homeReducers from '../src/reducers/home';
 import optionsReducers from '../src/reducers/options';
 import homeSaga from '../src/sagas/home';
 import { watchKeySequence } from '../src/sagas/key_sequence';
@@ -68,7 +68,7 @@ async function setup() {
 
   const state = {
     options: {},
-    popup:   {},
+    home:    {},
   };
   candidateInit(state.options);
   const sagaMiddleware = createSagaMiddleware();
@@ -79,7 +79,7 @@ async function setup() {
   const reducers = combineReducers({
     router:  connectRouter(history),
     options: optionsReducers(),
-    popup:   popupReducers(),
+    home:    homeReducers(),
   });
   store = createStore(reducers, state, applyMiddleware(...middleware));
 

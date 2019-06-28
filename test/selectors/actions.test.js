@@ -73,7 +73,7 @@ test.serial('checks selectors with default state', (t) => {
 
 test.serial('checks selectors with custom non-default state with one candidate', (t) => {
   const state = {
-    popup: {
+    home: {
       query:      'some query string in popup',
       candidates: {
         items: [tabCandidate],
@@ -108,7 +108,7 @@ test.serial('checks selectors with custom non-default state with one candidate',
 
 test.serial('checks selectors with custom non-default state with two candidate', (t) => {
   const state = {
-    popup: {
+    home: {
       query:      'some query string in popup',
       candidates: {
         items: [tabCandidate, tabCandidate2],
@@ -153,7 +153,7 @@ test.serial('selectMarkedCandidateIds always returns empty object', (t) => {
   t.deepEqual(selectMarkedCandidateIds(), {});
   t.deepEqual(selectMarkedCandidateIds({
     actions: { makedCandidatesIds: { a: 0, b: 1 } },
-    popup:   { makedCandidatesIds: { a: 0, b: 1 } },
+    home:    { makedCandidatesIds: { a: 0, b: 1 } },
   }), {});
 });
 
@@ -161,6 +161,6 @@ test.serial('selectScheme always returns empty scheme', (t) => {
   t.deepEqual(selectScheme(), { enum: [] });
   t.deepEqual(selectScheme({
     actions: { scheme: { enum: [1, 2, 3] } },
-    popup:   { scheme: { enum: [2, 3, 4] } },
+    home:    { scheme: { enum: [2, 3, 4] } },
   }), { enum: [] });
 });

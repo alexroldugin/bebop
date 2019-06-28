@@ -15,18 +15,18 @@ export const defaultState = {
   },
 };
 
-export const selectRoot = (state = {}) => state.popup || defaultState;
+export const selectRoot = (state = {}) => state.home || defaultState;
 
 export const makeSelectQuery = () => createSelector(
   selectRoot,
-  popup => popup.query,
+  home => home.query,
 );
 
 export const selectMode = () => 'candidate';
 
 export const makeSelectCandidates = () => createSelector(
   selectRoot,
-  popup => popup.candidates,
+  home => home.candidates,
 );
 
 export const makeSelectCandidatesItems = () => createSelector(
@@ -47,23 +47,13 @@ export const makeSelectCandidatesIndex = () => createSelector(
 
 export const makeSelectSeparators  = () => createSelector(
   selectRoot,
-  popup => popup.separators,
+  home => home.separators,
 );
 
 export const makeSelectMarkedCandidateIds = () => createSelector(
   selectRoot,
-  popup => popup.markedCandidateIds,
+  home => home.markedCandidateIds,
 );
-
-// export const makeSelectCandidate  = () => createSelector(
-//   selectRoot,
-//   popup => popup.prev && popup.prev.candidate,
-// );
-
-// export const makeSelectPrev  = () => createSelector(
-//   selectRoot,
-//   popup => popup.prev,
-// );
 
 export const makeSelectScheme     = () => createSelector(
   selectRoot,

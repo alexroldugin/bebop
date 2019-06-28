@@ -29,7 +29,7 @@ const linkCandidate = {
 
 test('<ActionsPage /> | props | actions for tab candidate and empty query', (t) => {
   const props = mapStateToProps({
-    popup: {
+    home: {
       candidates: {
         items: [tabCandidate],
         index: 0,
@@ -48,7 +48,7 @@ test('<ActionsPage /> | props | actions for tab candidate and empty query', (t) 
 
 test('<ActionsPage /> | props | actions for tab candidate and query specified', (t) => {
   const props = mapStateToProps({
-    popup: {
+    home: {
       candidates: {
         items: [tabCandidate],
         index: 0,
@@ -67,7 +67,7 @@ test('<ActionsPage /> | props | actions for tab candidate and query specified', 
 
 test('<ActionsPage /> | props | actions for link candidate and empty query', (t) => {
   const props = mapStateToProps({
-    popup: {
+    home: {
       candidates: {
         items: [tabCandidate, linkCandidate],
         index: 1,
@@ -87,7 +87,7 @@ test('<ActionsPage /> | props | actions for link candidate and empty query', (t)
 
 test('<ActionsPage /> | props | actions for link candidate and query specified', (t) => {
   const props = mapStateToProps({
-    popup: {
+    home: {
       candidates: {
         items: [linkCandidate, tabCandidate],
         index: 0,
