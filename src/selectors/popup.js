@@ -34,6 +34,11 @@ export const makeSelectCandidatesItems = () => createSelector(
   candidates => candidates.items,
 );
 
+export const makeSelectCandidatesItemsLinks = () => createSelector(
+  makeSelectCandidatesItems(),
+  items => items.filter(item => item.type === 'link'),
+);
+
 export const makeSelectCandidatesIndex = () => createSelector(
   makeSelectCandidates(),
   makeSelectCandidatesItems(),

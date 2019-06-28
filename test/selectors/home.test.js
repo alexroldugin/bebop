@@ -8,6 +8,7 @@ import {
   makeSelectCandidates,
   makeSelectCandidatesIndex,
   makeSelectCandidatesItems,
+  makeSelectCandidatesItemsLinks,
   makeSelectMarkedCandidateIds,
   makeSelectScheme,
   makeSelectSchemeEnum,
@@ -18,6 +19,7 @@ let selectSeparators = null;
 let selectCandidates = null;
 let selectCandidatesIndex = null;
 let selectCandidatesItems = null;
+let selectCandidatesItemsLinks = null;
 let selectMarkedCandidateIds = null;
 let selectScheme = null;
 let selectSchemeEnum = null;
@@ -27,6 +29,7 @@ function setup() {
   selectCandidates = makeSelectCandidates();
   selectCandidatesIndex = makeSelectCandidatesIndex();
   selectCandidatesItems = makeSelectCandidatesItems();
+  selectCandidatesItemsLinks = makeSelectCandidatesItemsLinks();
   selectMarkedCandidateIds = makeSelectMarkedCandidateIds();
   selectScheme = makeSelectScheme();
   selectSchemeEnum = makeSelectSchemeEnum();
@@ -39,6 +42,7 @@ function restore() {
   selectCandidates = null;
   selectCandidatesIndex = null;
   selectCandidatesItems = null;
+  selectCandidatesItemsLinks = null;
   selectMarkedCandidateIds = null;
   selectScheme = null;
   selectSchemeEnum = null;
@@ -55,6 +59,7 @@ test('checks selectors with default state', (t) => {
   t.deepEqual(selectCandidates(), { items: [], index: 0 });
   t.is(selectCandidatesIndex(), 0);
   t.deepEqual(selectCandidatesItems(), []);
+  t.deepEqual(selectCandidatesItemsLinks(), []);
   t.deepEqual(selectMarkedCandidateIds(), {});
   t.deepEqual(selectScheme(), { enum: [] });
   t.deepEqual(selectSchemeEnum(), []);
@@ -86,6 +91,36 @@ test('checks selectors with non-default custom state', (t) => {
   t.deepEqual(selectSchemeEnum(state), root.scheme.enum);
   root.candidates.index = -9;
   t.is(selectCandidatesIndex(state), 3);
+});
+
+test('checks links list based on candidates list', (t) => {
+  const root = {
+    candidates: {
+      items: [
+        {
+          label: 'tab1',
+          type:  'tab',
+        },
+        {
+          label: 'link1',
+          type:  'link',
+        },
+        {
+          label: 'link2',
+          type:  'link',
+        },
+        {
+          label: 'tab1',
+          type:  'tab',
+        },
+      ],
+    },
+  };
+  const state = { popup: root };
+  t.deepEqual(
+    selectCandidatesItemsLinks(state),
+    root.candidates.items.filter(c => c.type === 'link'),
+  );
 });
 
 test('selectMode always returns \'candidate\'', (t) => {
