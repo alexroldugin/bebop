@@ -32,13 +32,14 @@ export default function candidates(query, { maxResults } = {}) {
       maxResults: linkMaxResults,
     },
   }).then(links => links.slice(0, maxResults).map((l) => {
-    const { id } = l;
+    const { id, rect } = l;
     return {
       id,
       label:      getLabel(l),
       type:       'link',
       args:       [l],
       faviconUrl: faviconUrl(l),
+      rect:       Object.assign({}, rect),
     };
   }))
     .catch(() => [])
