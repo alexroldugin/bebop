@@ -188,14 +188,9 @@ test('<HomePage /> | dispatch | dispatches POPUP_CLEANUP and POPUP_QUIT on dispa
   handlers.dispatchQuit();
 
   t.true(dispatch.isCalled);
-  t.is(2, dispatch.calls.length);
+  t.is(1, dispatch.calls.length);
   const call1 = dispatch.calls[0];
-  t.is(1, call1.args.length);
-  t.deepEqual({ type: 'POPUP_CLEANUP' }, call1.args[0]);
-
-  const call2 = dispatch.calls[1];
-  t.is(1, call2.args.length);
-  t.deepEqual({ type: 'POPUP_QUIT' }, call2.args[0]);
+  t.deepEqual([{ type: 'POPUP_QUIT' }], call1.args);
 });
 
 test('<HomePage /> | dispatch | dispatches KEY_SEQUENCES for known keybinding in handleKeyDown', (t) => {

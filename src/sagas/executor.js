@@ -23,8 +23,6 @@ export function* executeAction({ payload: { action, candidates } }) {
     yield call(sendMessageToActiveContentTab, message);
   } catch (e) {
     logger.error(e);
-  } finally {
-    yield put({ type: 'POPUP_CLEANUP' });
   }
 }
 

@@ -38,14 +38,8 @@ export const commandOfSeq = {
   'C-i':   dispatchAction('LIST_ACTIONS'),
   'C-SPC': dispatchAction('MARK_CANDIDATE'),
   'M-a':   dispatchAction('MARK_ALL_CANDIDATES'),
-  'ESC':   dispatchActions([
-    { type: 'POPUP_CLEANUP' },
-    { type: 'POPUP_QUIT' },
-  ]),
-  'C-g': dispatchActions([
-    { type: 'POPUP_CLEANUP' },
-    { type: 'POPUP_QUIT' },
-  ]),
+  'ESC':   dispatchAction('POPUP_QUIT'),
+  'C-g':   dispatchAction('POPUP_QUIT'),
 };
 
 export function* handleKeySequece({ payload }) {

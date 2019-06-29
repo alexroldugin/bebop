@@ -37,7 +37,6 @@ export function mapDispatchToProps(dispatch) {
       }
     },
     dispatchQuit: () => {
-      dispatch({ type: 'POPUP_CLEANUP' });
       dispatch({ type: 'POPUP_QUIT' });
     },
   };
