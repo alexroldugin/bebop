@@ -1,4 +1,4 @@
-import { takeEvery, put, all } from 'redux-saga/effects';
+import { takeEvery, put } from 'redux-saga/effects';
 import * as cursor from '../cursor';
 
 export function dispatchAction(type, payload) {
@@ -7,39 +7,27 @@ export function dispatchAction(type, payload) {
   };
 }
 
-function dispatchActions(actions) {
-  return function* dispatch() {
-    yield all(actions.map(ac => put(ac)));
-  };
-}
-
 /* eslint-disable quote-props */
 export const commandOfSeq = {
-  'C-f':    cursor.forwardChar,
-  'C-b':    cursor.backwardChar,
-  'C-a':    cursor.beginningOfLine,
-  'C-e':    cursor.endOfLine,
-  'C-n':    dispatchAction('NEXT_CANDIDATE'),
-  'C-p':    dispatchAction('PREVIOUS_CANDIDATE'),
-  'C-h':    cursor.deleteBackwardChar,
-  'C-k':    cursor.killLine,
-  up:       dispatchAction('PREVIOUS_CANDIDATE'),
-  down:     dispatchAction('NEXT_CANDIDATE'),
-  tab:      dispatchAction('NEXT_CANDIDATE'),
-  'S-tab':  dispatchAction('PREVIOUS_CANDIDATE'),
-  'return': dispatchActions([
-    { type: 'RETURN', payload: { actionIndex: 0 } },
-    { type: 'POPUP_QUIT' },
-  ]),
-  'S-return': dispatchActions([
-    { type: 'RETURN', payload: { actionIndex: 1 } },
-    { type: 'POPUP_QUIT' },
-  ]),
-  'C-i':   dispatchAction('LIST_ACTIONS'),
-  'C-SPC': dispatchAction('MARK_CANDIDATE'),
-  'M-a':   dispatchAction('MARK_ALL_CANDIDATES'),
-  'ESC':   dispatchAction('POPUP_QUIT'),
-  'C-g':   dispatchAction('POPUP_QUIT'),
+  'C-f':      cursor.forwardChar,
+  'C-b':      cursor.backwardChar,
+  'C-a':      cursor.beginningOfLine,
+  'C-e':      cursor.endOfLine,
+  'C-n':      dispatchAction('NEXT_CANDIDATE'),
+  'C-p':      dispatchAction('PREVIOUS_CANDIDATE'),
+  'C-h':      cursor.deleteBackwardChar,
+  'C-k':      cursor.killLine,
+  up:         dispatchAction('PREVIOUS_CANDIDATE'),
+  down:       dispatchAction('NEXT_CANDIDATE'),
+  tab:        dispatchAction('NEXT_CANDIDATE'),
+  'S-tab':    dispatchAction('PREVIOUS_CANDIDATE'),
+  'return':   dispatchAction('ENTER', { actionIndex: 0 }),
+  'S-return': dispatchAction('ENTER', { actionIndex: 1 }),
+  'C-i':      dispatchAction('LIST_ACTIONS'),
+  'C-SPC':    dispatchAction('MARK_CANDIDATE'),
+  'M-a':      dispatchAction('MARK_ALL_CANDIDATES'),
+  'ESC':      dispatchAction('EXIT'),
+  'C-g':      dispatchAction('EXIT'),
 };
 
 export function* handleKeySequece({ payload }) {
