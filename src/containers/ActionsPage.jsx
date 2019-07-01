@@ -36,6 +36,7 @@ export function mapDispatchToProps(dispatch) {
       }
     },
     dispatchQuit: () => {
+      dispatch({ type: 'EXIT' });
     },
   };
 }

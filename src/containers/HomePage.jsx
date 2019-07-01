@@ -37,7 +37,7 @@ export function mapDispatchToProps(dispatch) {
       }
     },
     dispatchQuit: () => {
-      dispatch({ type: 'POPUP_QUIT' });
+      dispatch({ type: 'EXIT' });
     },
   };
 }

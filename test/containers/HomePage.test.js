@@ -181,7 +181,7 @@ test('<HomePage /> | dispatch | dispatches QUERY on handleInputChange', (t) => {
   t.deepEqual({ type: 'QUERY', payload }, call.args[0]);
 });
 
-test('<HomePage /> | dispatch | dispatches POPUP_CLEANUP and POPUP_QUIT on dispatchQuit', (t) => {
+test('<HomePage /> | dispatch | dispatches EXIT on dispatchQuit', (t) => {
   const dispatch = nisemono.func();
 
   const handlers = mapDispatchToProps(dispatch);
@@ -190,7 +190,7 @@ test('<HomePage /> | dispatch | dispatches POPUP_CLEANUP and POPUP_QUIT on dispa
   t.true(dispatch.isCalled);
   t.is(1, dispatch.calls.length);
   const call1 = dispatch.calls[0];
-  t.deepEqual([{ type: 'POPUP_QUIT' }], call1.args);
+  t.deepEqual([{ type: 'EXIT' }], call1.args);
 });
 
 test('<HomePage /> | dispatch | dispatches KEY_SEQUENCES for known keybinding in handleKeyDown', (t) => {

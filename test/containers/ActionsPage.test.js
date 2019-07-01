@@ -128,13 +128,16 @@ test('<ActionsPage /> | dispatch | dispatches QUERY on handleInputChange', (t) =
   t.deepEqual({ type: 'QUERY', payload }, call.args[0]);
 });
 
-test('<ActionsPage /> | dispatch | dispatches nothing on dispatchQuit', (t) => {
+test('<ActionsPage /> | dispatch | dispatches EXIT on dispatchQuit', (t) => {
   const dispatch = nisemono.func();
 
   const handlers = mapDispatchToProps(dispatch);
   handlers.dispatchQuit();
 
-  t.false(dispatch.isCalled);
+  t.is(1, dispatch.calls.length);
+
+  const call = dispatch.calls[0];
+  t.deepEqual([{ type: 'EXIT' }], call.args);
 });
 
 // TODO optimize code duplication for handleKeyDown in ActionsPage and HomePage
