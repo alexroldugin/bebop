@@ -12,8 +12,25 @@ import homeRootSaga from './home';
 import actionsReducers from '../reducers/actions';
 import actionsRootSaga from './actions';
 
+import commandReducers from '../reducers/command';
+import commandSetZoomRootSaga from './command-set-zoom';
+// import commandManageCookiesSaga from './command-manage-cookies';
+
 import getReducerInjectors from '../utils/reducer_injectors';
 import getSagaInjectors from '../utils/saga_injectors';
+
+const locationSagas = {
+  '/':                 homeRootSaga,
+  '/actions':          actionsRootSaga,
+  '/command-set-zoom': commandSetZoomRootSaga,
+  // '/command-manage-cookies': commandManageCookiesSaga,
+};
+
+const locationReducers = {
+  '/':        homeRootReducers(),
+  '/actions': actionsReducers(),
+  common:     commandReducers(),
+};
 
 export function handleLocationChangeFactory(store) {
   return function* handleLocationChange({ payload: { location } }) {
@@ -23,19 +40,18 @@ export function handleLocationChangeFactory(store) {
     const sagaInjectors = yield call(getSagaInjectors, store);
     yield call(sagaInjectors.ejectAllSagas);
 
-    switch (location.pathname) {
-      case '/':
-        yield call(reducerInjectors.injectReducer, 'home', homeRootReducers());
-        yield call(sagaInjectors.injectSaga, 'home', homeRootSaga);
-        yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
-        break;
-      case '/actions':
-        yield call(reducerInjectors.injectReducer, 'actions', actionsReducers());
-        yield call(sagaInjectors.injectSaga, 'actions', actionsRootSaga);
-        yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
-        break;
-      default:
-        break;
+    const reducer = locationReducers[location.pathname]
+      ? locationReducers[location.pathname] : locationReducers.common;
+    yield call(
+      reducerInjectors.injectReducer,
+      location.pathname === '/' ? 'home' : location.pathname,
+      reducer,
+    );
+
+    const saga = locationSagas[location.pathname] ? locationSagas[location.pathname] : null;
+    if (saga) {
+      yield call(sagaInjectors.injectSaga, location.pathname, saga);
+      yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
     }
   };
 }
