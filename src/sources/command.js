@@ -11,7 +11,7 @@ const commands = [
   { name: 'reload'                  , icon: 'reload' },
   { name: 'add-bookmark'            , icon: 'bookmark' },
   { name: 'remove-bookmark'         , icon: 'bookmark' },
-  { name: 'set-zoom'                , icon: 'zoom' },
+  { name: 'set-zoom'                , icon: 'zoom',   navigate: true },
   { name: 'restore-previous-session', icon: 'session' },
   { name: 'manage-cookies'          , icon: 'cookie' },
   { name: 'download-hatebu'         , icon: 'hatebu' },
@@ -24,6 +24,7 @@ export default function candidates(q, { maxResults }) {
     label:      c.name,
     type:       'command',
     args:       [c.name],
+    navigate:   c.navigate ? `/command-${c.name}` : false,
     faviconUrl: browser.extension.getURL(`images/${c.icon}.png`),
   }))).then(items => ({
     items,
