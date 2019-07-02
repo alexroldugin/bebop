@@ -3,28 +3,23 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { Store, applyMiddleware } from 'webext-redux';
 import createSagaMiddleware from 'redux-saga';
+import { all, fork } from 'redux-saga/effects';
 
 import { ConnectedRouter, routerMiddleware } from 'connected-react-router';
 
 import ReactDOM from 'react-dom';
 import { Switch, Route } from 'react-router-dom';
 
-import {
-  call,
-  takeEvery,
-} from 'redux-saga/effects';
-
 import logger from 'kiroku';
 
 import { watchKeySequence } from './sagas/key_sequence';
-
-import getSagaInjectors from './utils/saga_injectors';
+import { watchLocationChangeSagaFactory } from './sagas/location_change.popup';
 
 import history from './utils/history';
 
 import HomePage from './containers/HomePage';
 import ActionsPage from './containers/ActionsPage';
-import ArgumentsPage from './containers/ArgumentsPage';
+import CommandPage from './containers/CommandPage';
 import ThemeProvider from './containers/ThemeProvider';
 
 import { init as actionsInit } from './actions';
@@ -61,18 +56,6 @@ export const popupCloseMiddleware = (/* store */) => next => (action) => {
   }
 };
 
-function watchActionsFactory(h) {
-  return function* watchActions() {
-    yield takeEvery('LIST_ACTIONS', function* gotoActionsPage() {
-      if (h.location.pathname !== '/actions') {
-        yield call(h.push, '/actions');
-      } else {
-        yield call(h.go, -1);
-      }
-    });
-  };
-}
-
 export function start({ store }) {
   const container = document.getElementById('container');
 
@@ -85,7 +68,7 @@ export function start({ store }) {
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route exact path="/actions" component={ActionsPage} />
-              <Route exact path="/arguments" component={ArgumentsPage} />
+              <Route exact path="/command-:command" component={CommandPage} />
               <Route render={() => (<div>Miss</div>)} />
             </Switch>
           </ThemeProvider>
@@ -95,6 +78,15 @@ export function start({ store }) {
     ReactDOM.render(element, container);
     return { container };
   });
+}
+
+export function rootPopupSagaFactory(store) {
+  return function* rootPopupSaga() {
+    yield all([
+      fork(watchKeySequence),
+      fork(watchLocationChangeSagaFactory(store)),
+    ]);
+  };
 }
 
 export function setupStoreSagas(store) {
@@ -107,10 +99,9 @@ export function setupStoreSagas(store) {
   const enhancedStore = applyMiddleware(store, ...middleware);
   enhancedStore.injectedSagas = {}; // Saga registry
   enhancedStore.runSaga = sagaMiddleware.run;
-
-  getSagaInjectors(enhancedStore).injectSaga('keys', watchKeySequence);
-  getSagaInjectors(enhancedStore).injectSaga('navigator', watchActionsFactory(history));
+  enhancedStore.runSaga(rootPopupSagaFactory(enhancedStore));
 
   return enhancedStore;
 }
+
 export default start({ store: setupStoreSagas(new Store()) });

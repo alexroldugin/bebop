@@ -8,7 +8,7 @@ import { connectRouter } from 'connected-react-router';
 
 import ReactTestUtils from 'react-dom/test-utils';
 import {
-  start, stop, popupCloseMiddleware, setupStoreSagas,
+  start, stop, popupCloseMiddleware, setupStoreSagas, rootPopupSagaFactory,
 } from '../src/popup';
 
 import history from '../src/utils/history';
@@ -17,8 +17,13 @@ import { init as candidateInit } from '../src/candidates';
 import { init as actionInit } from '../src/actions';
 import homeReducers from '../src/reducers/home';
 import optionsReducers from '../src/reducers/options';
+
 import homeSaga from '../src/sagas/home';
+import homePopupSaga from '../src/sagas/home.popup';
 import { watchKeySequence } from '../src/sagas/key_sequence';
+import * as locationChangeSagaContent from '../src/sagas/location_change.popup';
+
+const { watchLocationChangeSagaFactory } = locationChangeSagaContent;
 
 const WAIT_MS = 250;
 const delay  = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -86,6 +91,7 @@ async function setup() {
   function* mergedSaga() {
     yield all([
       fork(homeSaga),
+      fork(homePopupSaga),
       fork(watchKeySequence),
     ]);
   }
@@ -100,9 +106,12 @@ function restore() {
   document.scrollingElement = null;
   window.close = close;
 
-  stop({ container: popup.container, store });
+  stop(popup);
   store = null;
   popup = null;
+  while (history.canGo(-1)) {
+    history.go(-1);
+  }
 }
 
 test.beforeEach(setup);
@@ -280,10 +289,25 @@ test.serial('popupCloseMiddleware posts CLOSE message to window for content-wind
   global.window = w;
 });
 
-test.serial('setupStoreSagas injects keys and navigator sagas', (t) => {
+test.serial('setupStoreSagas setups fields for injections', (t) => {
   const storeWithNoSaga = createStore((state = {}) => state, {});
   const storeWithSaga = setupStoreSagas(storeWithNoSaga);
   t.truthy(storeWithSaga.injectedSagas);
-  t.truthy(storeWithSaga.injectedSagas.keys);
-  t.truthy(storeWithSaga.injectedSagas.navigator);
+  t.truthy(storeWithSaga.runSaga);
+});
+
+test.serial('generates root saga', (t) => {
+  const rootSaga = rootPopupSagaFactory(store);
+  const watchLocationChangeSagaMock = nisemono.func();
+  locationChangeSagaContent.watchLocationChangeSagaFactory = () => watchLocationChangeSagaMock;
+  const gen = rootSaga();
+  t.deepEqual(
+    gen.next().value,
+    all([
+      fork(watchKeySequence),
+      fork(watchLocationChangeSagaMock),
+    ]),
+  );
+  t.true(gen.next().done);
+  locationChangeSagaContent.watchLocationChangeSagaFactory = watchLocationChangeSagaFactory;
 });
