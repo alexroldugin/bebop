@@ -1,6 +1,5 @@
 import logger from 'kiroku';
 import {
-  put,
   fork,
   takeEvery,
   call,
