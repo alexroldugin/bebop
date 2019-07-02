@@ -18,8 +18,10 @@ export const candidatesItems = (state = [], action) => {
 
 export const candidatesIndex = (state = null, action) => {
   switch (action.type) {
-    case 'CANDIDATES':
-      return null;
+    case 'CANDIDATES': {
+      const { index } = action.payload;
+      return index !== -1 && index !== undefined ? index : null;
+    }
     case 'NEXT_CANDIDATE': {
       const i = state;
       return (Number.isNaN(i) ? -1 : i) + 1;
@@ -28,6 +30,8 @@ export const candidatesIndex = (state = null, action) => {
       const i = state;
       return (Number.isNaN(i) ? 0 : i) - 1;
     }
+    case 'QUERY':
+      return null;
     default:
       return state;
   }
