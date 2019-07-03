@@ -1,8 +1,21 @@
+import React from 'react';
+
 import browser from 'webextension-polyfill';
+
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { Store, applyMiddleware } from 'webext-redux';
+import createSagaMiddleware from 'redux-saga';
+
 import logger from 'kiroku';
-import { toggle } from './content_popup';
 import { init as actionInit, find as findAction } from './actions';
-import { search, highlight, dehighlight } from './link';
+import {
+  search,
+  reduce,
+} from './link';
+
+import LinksOverlay from './containers/LinksOverlay';
+import CurrentLinkHighlighterOverlay from './containers/CurrentLinkHighlighterOverlay';
 
 const portName = `content-script-${window.location.href}`;
 let port = null;
@@ -23,22 +36,7 @@ function handleExecuteAction({ actionId, candidates }) {
   return executeAction(actionId, candidates);
 }
 
-function handleCandidateChange(candidate) {
-  dehighlight();
-  if (!candidate || candidate.type !== 'link') {
-    highlight();
-  } else {
-    highlight(candidate.args[0]);
-  }
-  return Promise.resolve();
-}
-
 function handleClose() {
-  dehighlight();
-}
-
-async function handleTogglePopup() {
-  await toggle();
 }
 
 export function portMessageListener(msg) {
@@ -57,14 +55,10 @@ export function messageListener(request) {
   switch (request.type) {
     case 'FETCH_LINKS':
       return Promise.resolve(search(request.payload));
-    case 'CHANGE_CANDIDATE':
-      return handleCandidateChange(request.payload);
     case 'EXECUTE_ACTION':
       return handleExecuteAction(request.payload);
-    case 'TOGGLE_POPUP':
-      return handleTogglePopup(request.payload);
-    case 'POPUP_CLEANUP':
-      return handleClose();
+    // case 'TOGGLE_POPUP':
+    //   return handleTogglePopup(request.payload);
     default:
       return null;
   }
@@ -81,4 +75,44 @@ setTimeout(() => {
   browser.runtime.onMessage.addListener(messageListener);
   logger.info('bebop content_script is loaded');
 }, 500);
+
+
+export function start({ store }) {
+  // wait for the store to connect to the background page
+  return store.ready().then(() => {
+    const overlays = reduce((doc) => {
+      const element = (
+        <Provider store={store}>
+          <LinksOverlay />
+          <CurrentLinkHighlighterOverlay />
+        </Provider>
+      );
+      const container = doc.createElement('div');
+      if (doc.body) {
+        doc.body.appendChild(container);
+        ReactDOM.render(element, container);
+      }
+      return { container };
+    });
+    return overlays;
+  });
+}
+
+export function stop({ container }) {
+  ReactDOM.unmountComponentAtNode(container);
+}
+
+export function setupStoreSagas(store) {
+  const sagaMiddleware = createSagaMiddleware();
+  const middleware = [
+    sagaMiddleware,
+  ];
+  const enhancedStore = applyMiddleware(store, ...middleware);
+  enhancedStore.injectedSagas = {}; // Saga registry
+  enhancedStore.runSaga = sagaMiddleware.run;
+
+  return enhancedStore;
+}
 actionInit();
+
+export default start({ store: setupStoreSagas(new Store()) });
