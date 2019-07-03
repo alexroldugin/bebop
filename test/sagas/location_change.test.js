@@ -67,7 +67,7 @@ test('handles \'/actions\' location', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, '/actions', homeRootReducers());
+  const expected = call(ri.injectReducer, 'actions', homeRootReducers());
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);
@@ -91,7 +91,7 @@ test('handles \'/command-set-zoom\' location', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, '/command-set-zoom', commandReducers());
+  const expected = call(ri.injectReducer, 'command', commandReducers());
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);
@@ -115,7 +115,7 @@ test('handles unknown location by ejecting sagas and reducers', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, '/unknown', commandReducers());
+  const expected = call(ri.injectReducer, 'unknown', commandReducers());
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);

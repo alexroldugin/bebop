@@ -42,9 +42,13 @@ export function handleLocationChangeFactory(store) {
 
     const reducer = locationReducers[location.pathname]
       ? locationReducers[location.pathname] : locationReducers.common;
+    let reducerName = location.pathname === '/'
+      ? 'home' : location.pathname;
+    reducerName = reducerName.startsWith('/command-')
+      ? 'command' : reducerName.replace('/', '');
     yield call(
       reducerInjectors.injectReducer,
-      location.pathname === '/' ? 'home' : location.pathname,
+      reducerName,
       reducer,
     );
 
