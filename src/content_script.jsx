@@ -9,6 +9,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import logger from 'kiroku';
 import { init as actionInit, find as findAction } from './actions';
+import { toggle } from './content_popup';
 import {
   search,
   reduce,
@@ -39,6 +40,10 @@ function handleExecuteAction({ actionId, candidates }) {
 function handleClose() {
 }
 
+async function handleTogglePopup() {
+  await toggle();
+}
+
 export function portMessageListener(msg) {
   const { type, payload } = msg;
   logger.trace(`Handle message ${type} ${JSON.stringify(payload)}`);
@@ -57,8 +62,8 @@ export function messageListener(request) {
       return Promise.resolve(search(request.payload));
     case 'EXECUTE_ACTION':
       return handleExecuteAction(request.payload);
-    // case 'TOGGLE_POPUP':
-    //   return handleTogglePopup(request.payload);
+    case 'TOGGLE_POPUP':
+      return handleTogglePopup(request.payload);
     default:
       return null;
   }
