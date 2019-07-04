@@ -49,6 +49,8 @@ export function getPopupPorts() {
   return Object.values(popupPorts);
 }
 
+export function getStore() { return store; }
+
 function postMessageToContentScript(type, payload) {
   const currentWindow = true;
   const active        = true;
@@ -100,10 +102,9 @@ function connectListener(port) {
   } else if (name.startsWith('popup')) {
     popupPorts[name] = port;
     port.onDisconnect.addListener(() => {
-      store.dispatch({ type: 'POPUP_CLOSED' });
-
       delete popupPorts[name];
       postMessageToContentScript('POPUP_CLOSE');
+      store.dispatch({ type: 'POPUP_CLOSED' });
     });
   }
   logger.info(`There are ${Object.values(contentScriptPorts).length} channel`);

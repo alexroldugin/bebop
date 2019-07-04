@@ -5,6 +5,7 @@ import {
   getContentScriptPorts,
   getPopupPorts,
   commandListener,
+  getStore,
 } from '../src/background';
 import { getPopupWindow } from '../src/popup_window';
 import createPort from './create_port';
@@ -94,6 +95,9 @@ test.serial('handle window focus changed event', (t) => {
 test.serial('manage content script ports', (t) => {
   let contentDisconnectHandler = null;
   let popupDisconnectHandler = null;
+  let onDisconnectStoreAction = null;
+
+  getStore().dispatch = (action) => { onDisconnectStoreAction = action; };
   onConnectPort.messageListeners.forEach((l) => {
     l({
       name:         'content-script-0000',
@@ -124,10 +128,16 @@ test.serial('manage content script ports', (t) => {
   t.is(getContentScriptPorts().length, 1);
 
   popupDisconnectHandler();
+  t.deepEqual(onDisconnectStoreAction, { type: 'POPUP_CLOSED' });
+
   contentDisconnectHandler();
 
   t.is(getPopupPorts().length, 0);
   t.is(getContentScriptPorts().length, 0);
+});
+
+test('store is initialized', (t) => {
+  t.not(getStore(), null);
 });
 
 test('commandListener', (t) => {
