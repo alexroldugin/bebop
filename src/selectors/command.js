@@ -38,7 +38,12 @@ export const makeSelectCandidatesIndex = () => createSelector(
   (candidates, items) => uncirculateIndex(items, candidates.index),
 );
 
-export const selectSeparators  = () => ([]);
+export const makeSelectSeparators  = () => createSelector(
+  selectRoot,
+  root => root.separators,
+);
+
+export const selectEmptySeparators = () => ([]);
 
 export const selectMarkedCandidateIds = () => ({});
 

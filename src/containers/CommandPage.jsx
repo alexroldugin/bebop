@@ -8,17 +8,17 @@ import { commandOfSeq } from '../sagas/key_sequence';
 import {
   makeSelectCandidatesItems,
   makeSelectCandidatesIndex,
+  makeSelectSeparators,
   selectScheme,
   selectMode,
   selectMarkedCandidateIds,
-  selectSeparators,
 } from '../selectors/command';
 
 export const mapStateToProps = createStructuredSelector({
   query:              () => '',
   candidates:         makeSelectCandidatesItems(),
   index:              makeSelectCandidatesIndex(),
-  separators:         selectSeparators,
+  separators:         makeSelectSeparators(),
   markedCandidateIds: selectMarkedCandidateIds,
   mode:               selectMode,
   scheme:             selectScheme,
