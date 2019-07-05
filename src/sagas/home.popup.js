@@ -26,14 +26,13 @@ export function* watchActions() {
 }
 
 export function* handleEnter({ payload }) {
-  yield put({ type: 'RETURN', payload });
-
   const index = yield select(makeSelectCandidatesIndex());
   const items = yield select(makeSelectCandidatesItems());
   const candidate = items[index];
   if (candidate && candidate.navigate) {
     yield call(history.push, candidate.navigate);
   } else {
+    yield put({ type: 'RETURN', payload });
     yield put({ type: 'POPUP_QUIT' });
   }
 }

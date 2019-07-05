@@ -41,7 +41,6 @@ test('watches for ENTER', (t) => {
 test('navigates to candidate\'s page if specified on ENTER', (t) => {
   const payload = 'some payload data';
   const gen = handleEnter({ payload });
-  t.deepEqual(gen.next().value, put({ type: 'RETURN', payload }));
 
   const index = 1;
   const items = [{ navigate: '/page1' }, { navigate: '/page2' }, { navigate: '/page3' }];
@@ -54,26 +53,26 @@ test('navigates to candidate\'s page if specified on ENTER', (t) => {
 test('dispatches POPUP_QUIT if navigate info didn\'t specify on ENTER', (t) => {
   const payload = 'some new payload data';
   const gen = handleEnter({ payload });
-  t.deepEqual(gen.next().value, put({ type: 'RETURN', payload }));
 
   const index = 0;
   const items = [{ candidate: 0 }, { candidate: 1 }, { candidate: 2 }];
   gen.next(); // select index
   gen.next(index); // select items
-  t.deepEqual(gen.next(items).value, put({ type: 'POPUP_QUIT' }));
+  t.deepEqual(gen.next(items).value, put({ type: 'RETURN', payload }));
+  t.deepEqual(gen.next().value, put({ type: 'POPUP_QUIT' }));
   t.true(gen.next().done);
 });
 
 test('dispatches POPUP_QUIT if candidate didn\'t find on ENTER', (t) => {
   const payload = 'some new payload data';
   const gen = handleEnter({ payload });
-  t.deepEqual(gen.next().value, put({ type: 'RETURN', payload }));
 
   const index = 10;
   const items = [];
   gen.next(); // select index
   gen.next(index); // select items
-  t.deepEqual(gen.next(items).value, put({ type: 'POPUP_QUIT' }));
+  t.deepEqual(gen.next(items).value, put({ type: 'RETURN', payload }));
+  t.deepEqual(gen.next().value, put({ type: 'POPUP_QUIT' }));
   t.true(gen.next().done);
 });
 
