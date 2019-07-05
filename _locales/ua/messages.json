@@ -42,5 +42,8 @@
   },
   "hatena_options_hint": {
     "message": "Вказати ім'я користувача hatena"
+  },
+  "command_set_zoom_separator": {
+    "message": "Масштаб сторінки"
   }
 }

@@ -42,5 +42,8 @@
   },
   "hatena_options_hint": {
     "message": "Set hatena user name"
+  },
+  "command_set_zoom_separator": {
+    "message": "Page Zoom"
   }
 }

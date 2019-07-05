@@ -42,5 +42,8 @@
   },
   "hatena_options_hint": {
     "message": "Указать имя пользователя hatena"
+  },
+  "command_set_zoom_separator": {
+    "message": "Масштаб страницы"
   }
 }

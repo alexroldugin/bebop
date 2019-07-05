@@ -10,6 +10,7 @@ import {
 
 import { getActiveContentTab } from '../utils/tabs';
 import { range } from '../utils/array';
+import getMessage from '../utils/i18n';
 
 import {
   makeSelectCandidatesItems,
@@ -39,7 +40,7 @@ export function* handlePageInjected() {
   const zoomFactor    = yield call(browser.tabs.getZoom, tabId);
   const zoom = Math.round(zoomFactor * 100);
   const index = items.findIndex(e => e.id === zoom);
-  const separators = [];
+  const separators = [{ index: 0, label: getMessage('command_set_zoom_separator') }];
 
   yield put({ type: 'QUERY', payload: '' });
   yield put({ type: 'CANDIDATES', payload: { items, separators, index } });
