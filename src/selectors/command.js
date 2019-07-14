@@ -2,44 +2,45 @@ import { createSelector } from 'reselect';
 
 import { uncirculateIndex } from '../utils/array';
 
-const defaultState = {
+export const defaultState = {
   query:      '',
   candidates: {
     items: [],
     index: 0,
   },
+  separators: [],
 };
 
-const emptyScheme = { enum: [] };
+export const emptyScheme = { enum: [] };
 
-export const selectRoot      = (state = {}) => state.command || defaultState;
+export const makeSelectRoot  = command => (state = {}) => state[command] || defaultState;
 
-export const makeSelectQuery = () => createSelector(
-  selectRoot,
+export const makeSelectQuery = command => createSelector(
+  makeSelectRoot(command),
   root => root.query,
 );
 
 export const selectMode = () => 'candidates';
 
-export const makeSelectCandidates = () => createSelector(
-  selectRoot,
+export const makeSelectCandidates = command => createSelector(
+  makeSelectRoot(command),
   root => root.candidates,
 );
 
-export const makeSelectCandidatesItems = () => createSelector(
-  makeSelectCandidates(),
-  makeSelectQuery(),
+export const makeSelectCandidatesItems = command => createSelector(
+  makeSelectCandidates(command),
+  makeSelectQuery(command),
   (candidates, query) => candidates.items.filter(c => c.label.includes(query)),
 );
 
-export const makeSelectCandidatesIndex = () => createSelector(
-  makeSelectCandidates(),
-  makeSelectCandidatesItems(),
+export const makeSelectCandidatesIndex = command => createSelector(
+  makeSelectCandidates(command),
+  makeSelectCandidatesItems(command),
   (candidates, items) => uncirculateIndex(items, candidates.index),
 );
 
-export const makeSelectSeparators  = () => createSelector(
-  selectRoot,
+export const makeSelectSeparators  = command => createSelector(
+  makeSelectRoot(command),
   root => root.separators,
 );
 
@@ -48,5 +49,3 @@ export const selectEmptySeparators = () => ([]);
 export const selectMarkedCandidateIds = () => ({});
 
 export const selectScheme = () => emptyScheme;
-
-export default selectRoot;
