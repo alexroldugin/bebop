@@ -1,9 +1,7 @@
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-import PopupPage from '../components/PopupPage';
-import keySequence from '../key_sequences';
-import { commandOfSeq } from '../sagas/key_sequence';
+import PopupPage, { mapDispatchToProps } from '../components/PopupPage';
 
 import {
   makeSelectCandidatesItems,
@@ -14,31 +12,17 @@ import {
   selectMarkedCandidateIds,
 } from '../selectors/command';
 
-export const mapStateToProps = createStructuredSelector({
+export const makeMapStateToProps = command => createStructuredSelector({
   query:              () => '',
-  candidates:         makeSelectCandidatesItems(),
-  index:              makeSelectCandidatesIndex(),
-  separators:         makeSelectSeparators(),
+  candidates:         makeSelectCandidatesItems(command),
+  index:              makeSelectCandidatesIndex(command),
+  separators:         makeSelectSeparators(command),
   markedCandidateIds: selectMarkedCandidateIds,
   mode:               selectMode,
   scheme:             selectScheme,
 });
 
-export function mapDispatchToProps(dispatch) {
-  return {
-    handleSelectCandidate: () => {},
-    handleInputChange:     payload => dispatch({ type: 'QUERY', payload }),
-    handleKeyDown:         (e) => {
-      const keySeq = keySequence(e);
-      if (commandOfSeq[keySeq]) {
-        e.preventDefault();
-        dispatch({ type: 'KEY_SEQUENCE', payload: keySeq });
-      }
-    },
-    dispatchQuit: () => {
-      dispatch({ type: 'EXIT' });
-    },
-  };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(PopupPage);
+export const makeCommandPage = command => connect(
+  makeMapStateToProps(command),
+  mapDispatchToProps,
+)(PopupPage);

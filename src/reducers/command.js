@@ -4,6 +4,7 @@ import {
   candidatesItems,
   candidatesIndex,
   separators,
+  markedCandidateIds,
 } from './candidates';
 
 export default () => combineReducers({
@@ -13,4 +14,5 @@ export default () => combineReducers({
     items: candidatesItems,
     index: candidatesIndex,
   }),
+  markedCandidateIds,
 });

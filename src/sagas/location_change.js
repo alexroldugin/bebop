@@ -14,16 +14,18 @@ import actionsRootSaga from './actions';
 
 import commandReducers from '../reducers/command';
 import commandSetZoomRootSaga from './command-set-zoom';
-// import commandManageCookiesSaga from './command-manage-cookies';
+import commandManageCookiesSaga from './command-manage-cookies';
+import commandManageCookiesActionsSaga from './command-manage-cookies-actions';
 
 import getReducerInjectors from '../utils/reducer_injectors';
 import getSagaInjectors from '../utils/saga_injectors';
 
 const locationSagas = {
-  '/':                 homeRootSaga,
-  '/actions':          actionsRootSaga,
-  '/command-set-zoom': commandSetZoomRootSaga,
-  // '/command-manage-cookies': commandManageCookiesSaga,
+  '/':                               homeRootSaga,
+  '/actions':                        actionsRootSaga,
+  '/command-set-zoom':               commandSetZoomRootSaga,
+  '/command-manage-cookies':         commandManageCookiesSaga,
+  '/command-manage-cookies-actions': commandManageCookiesActionsSaga,
 };
 
 const locationReducers = {
@@ -42,10 +44,8 @@ export function handleLocationChangeFactory(store) {
 
     const reducer = locationReducers[location.pathname]
       ? locationReducers[location.pathname] : locationReducers.common;
-    let reducerName = location.pathname === '/'
-      ? 'home' : location.pathname;
-    reducerName = reducerName.startsWith('/command-')
-      ? 'command' : reducerName.replace('/', '');
+    const reducerName = location.pathname === '/'
+      ? 'home' : location.pathname.replace('/', '');
     yield call(
       reducerInjectors.injectReducer,
       reducerName,
@@ -55,8 +55,8 @@ export function handleLocationChangeFactory(store) {
     const saga = locationSagas[location.pathname] ? locationSagas[location.pathname] : null;
     if (saga) {
       yield call(sagaInjectors.injectSaga, location.pathname, saga);
-      yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
     }
+    yield put({ type: 'PAGE_INJECTED', payload: location.pathname });
   };
 }
 

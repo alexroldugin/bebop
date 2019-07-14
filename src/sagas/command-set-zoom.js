@@ -17,9 +17,11 @@ import {
   makeSelectCandidatesIndex,
 } from '../selectors/command';
 
+const REDUX_ROOT_KEY = 'command-set-zoom';
+
 export function* handleZoomChange() {
-  const actionIndex = yield select(makeSelectCandidatesIndex());
-  const actionItems = yield select(makeSelectCandidatesItems());
+  const actionIndex = yield select(makeSelectCandidatesIndex(REDUX_ROOT_KEY));
+  const actionItems = yield select(makeSelectCandidatesItems(REDUX_ROOT_KEY));
   const action = actionItems[actionIndex];
 
   if (action) {

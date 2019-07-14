@@ -91,7 +91,7 @@ test('handles \'/command-set-zoom\' location', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, 'command', commandReducers());
+  const expected = call(ri.injectReducer, 'command-set-zoom', commandReducers());
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);
@@ -115,10 +115,11 @@ test('handles unknown location by ejecting sagas and reducers', (t) => {
   t.deepEqual(gen.next(si).value, call(si.ejectAllSagas));
 
   const got = gen.next(ri).value;
-  const expected = call(ri.injectReducer, 'unknown', commandReducers());
+  const expected = call(ri.injectReducer, 'unknown', state => state);
   delete got.CALL.args[1];
   delete expected.CALL.args[1];
   t.deepEqual(got, expected);
 
+  t.deepEqual(gen.next().value, put({ type: 'PAGE_INJECTED', payload: '/unknown' }));
   t.true(gen.next().done);
 });

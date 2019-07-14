@@ -1,9 +1,7 @@
 import test from 'ava';
-import nisemono from 'nisemono';
 
 import {
-  mapStateToProps,
-  mapDispatchToProps,
+  makeMapStateToProps,
 } from '../../src/containers/CommandPage';
 
 const tabCandidate = {
@@ -21,6 +19,19 @@ const linkCandidate = {
   args:       [],
   faviconUrl: 'some://test.link.url',
 };
+
+let mapStateToProps;
+
+function setup() {
+  mapStateToProps = makeMapStateToProps('command');
+}
+
+function restore() {
+  mapStateToProps = null;
+}
+
+test.beforeEach(setup);
+test.afterEach(restore);
 
 
 test('props | items for tab candidate and empty query', (t) => {
@@ -93,77 +104,17 @@ test('props | filtered items for two candidate and query specified', (t) => {
   t.snapshot(props);
 });
 
-test('dispatch | dispatches nothing on handleSelectCandidate', (t) => {
-  const dispatch = nisemono.func();
-  const payload = 'some payload data';
-
-  const handlers = mapDispatchToProps(dispatch);
-  handlers.handleSelectCandidate(payload);
-
-  t.false(dispatch.isCalled);
-});
-
-test('dispatch | dispatches QUERY on handleInputChange', (t) => {
-  const dispatch = nisemono.func();
-  const payload = 'some payload data';
-
-  const handlers = mapDispatchToProps(dispatch);
-  handlers.handleInputChange(payload);
-
-  t.true(dispatch.isCalled);
-  t.is(1, dispatch.calls.length);
-  const call = dispatch.calls[0];
-  t.is(1, call.args.length);
-  t.deepEqual({ type: 'QUERY', payload }, call.args[0]);
-});
-
-test('dispatch | dispatches EXIT on dispatchQuit', (t) => {
-  const dispatch = nisemono.func();
-
-  const handlers = mapDispatchToProps(dispatch);
-  handlers.dispatchQuit();
-
-  t.is(1, dispatch.calls.length);
-
-  const call = dispatch.calls[0];
-  t.deepEqual([{ type: 'EXIT' }], call.args);
-});
-
-// TODO optimize code duplication for handleKeyDown in ActionsPage and HomePage
-test('dispatch | dispatches KEY_SEQUENCES for known keybinding in handleKeyDown', (t) => {
-  const dispatch = nisemono.func();
-  const SPC_KEY = 32;
-  const event = {
-    keyCode:        SPC_KEY,
-    ctrlKey:        true,
-    preventDefault: nisemono.func(),
-  };
-
-  const handlers = mapDispatchToProps(dispatch);
-  handlers.handleKeyDown(event);
-
-  t.true(dispatch.isCalled);
-  t.is(1, dispatch.calls.length);
-
-  const call = dispatch.calls[0];
-  t.is(1, call.args.length);
-  t.deepEqual({ type: 'KEY_SEQUENCE', payload: 'C-SPC' }, call.args[0]);
-
-  t.true(event.preventDefault.isCalled);
-});
-
-// TODO optimize code duplication for handleKeyDown in ActionsPage and HomePage
-test('dispatch | doesn\'t dispatch KEY_SEQUENCES for unknown keybinding in handleKeyDown', (t) => {
-  const dispatch = nisemono.func();
-  const A_KEY = 65;
-  const event = {
-    keyCode:        A_KEY,
-    preventDefault: nisemono.func(),
-  };
-
-  const handlers = mapDispatchToProps(dispatch);
-  handlers.handleKeyDown(event);
-
-  t.false(dispatch.isCalled);
-  t.false(event.preventDefault.isCalled);
+test('props | filtered items for two candidate and query specified another root', (t) => {
+  const stateToProps = makeMapStateToProps('command2');
+  const props = stateToProps({
+    command2: {
+      query:      'Lin',
+      candidates: {
+        items: [linkCandidate, tabCandidate],
+        index: 0,
+      },
+      separators: [],
+    },
+  });
+  t.snapshot(props);
 });

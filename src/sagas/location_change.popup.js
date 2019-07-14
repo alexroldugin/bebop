@@ -8,16 +8,18 @@ import { LOCATION_CHANGE } from 'connected-react-router';
 import homeRootSaga from './home.popup';
 import actionsRootSaga from './actions.popup';
 
-// import commandManageCookiesSaga from './command-manage-cookies.popup';
+import commandManageCookiesSaga from './command-manage-cookies.popup';
+import commandManageCookiesActionsSaga from './command-manage-cookies-actions.popup';
 import commonSaga from './common.popup';
 
 import getSagaInjectors from '../utils/saga_injectors';
 
 const locationSagas = {
-  '/':        homeRootSaga,
-  '/actions': actionsRootSaga,
-  common:     commonSaga,
-  // '/command-manage-cookies': commandManageCookiesSaga,
+  '/':                               homeRootSaga,
+  '/actions':                        actionsRootSaga,
+  common:                            commonSaga,
+  '/command-manage-cookies':         commandManageCookiesSaga,
+  '/command-manage-cookies-actions': commandManageCookiesActionsSaga,
 };
 let m;
 
