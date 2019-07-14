@@ -19,7 +19,7 @@ import history from './utils/history';
 
 import HomePage from './containers/HomePage';
 import ActionsPage from './containers/ActionsPage';
-import CommandPage from './containers/CommandPage';
+import LocationBasedCommandPage from './containers/LocationBasedCommandPage';
 import ThemeProvider from './containers/ThemeProvider';
 
 import { init as actionsInit } from './actions';
@@ -68,7 +68,11 @@ export function start({ store }) {
             <Switch>
               <Route exact path="/" component={HomePage} />
               <Route exact path="/actions" component={ActionsPage} />
-              <Route exact path="/command-:command" component={CommandPage} />
+              <Route
+                exact
+                path="/command-:command"
+                component={LocationBasedCommandPage}
+              />
               <Route render={() => (<div>Miss</div>)} />
             </Switch>
           </ThemeProvider>
