@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import getMessage from '../utils/i18n';
 import Candidate from './Candidate';
 
+import keySequence from '../key_sequences';
+import { commandOfSeq } from '../sagas/key_sequence';
+
 class PopupPage extends React.Component {
   static get propTypes() {
     return {
@@ -175,6 +178,23 @@ class PopupPage extends React.Component {
       </form>
     );
   }
+}
+
+export function mapDispatchToProps(dispatch) {
+  return {
+    handleSelectCandidate: payload => dispatch({ type: 'SELECT_CANDIDATE', payload }),
+    handleInputChange:     payload => dispatch({ type: 'QUERY', payload }),
+    handleKeyDown:         (e) => {
+      const keySeq = keySequence(e);
+      if (commandOfSeq[keySeq]) {
+        e.preventDefault();
+        dispatch({ type: 'KEY_SEQUENCE', payload: keySeq });
+      }
+    },
+    dispatchQuit: () => {
+      dispatch({ type: 'EXIT' });
+    },
+  };
 }
 
 export default PopupPage;

@@ -1,8 +1,9 @@
 import test      from 'ava';
+import nisemono  from 'nisemono';
 import React     from 'react';
 import render    from 'react-test-renderer';
 
-import PopupPage from '../../src/components/PopupPage';
+import PopupPage, { mapDispatchToProps } from '../../src/components/PopupPage';
 
 const candidateTabItem = {
   id:         'tab_item_id',
@@ -207,4 +208,81 @@ const runTestTemplateFunction = (name, {
       },
     },
   );
+});
+
+test('dispatch | dispatches SELECT_DANDIDATE on handleSelectCandidate', (t) => {
+  const dispatch = nisemono.func();
+  const payload = 'some payload data';
+
+  const handlers = mapDispatchToProps(dispatch);
+  handlers.handleSelectCandidate(payload);
+
+  t.true(dispatch.isCalled);
+  t.is(1, dispatch.calls.length);
+  const call = dispatch.calls[0];
+  t.is(1, call.args.length);
+  t.deepEqual({ type: 'SELECT_CANDIDATE', payload }, call.args[0]);
+});
+
+test('dispatches QUERY on handleInputChange', (t) => {
+  const dispatch = nisemono.func();
+  const payload = 'some payload data';
+
+  const handlers = mapDispatchToProps(dispatch);
+  handlers.handleInputChange(payload);
+
+  t.true(dispatch.isCalled);
+  t.is(1, dispatch.calls.length);
+  const call = dispatch.calls[0];
+  t.is(1, call.args.length);
+  t.deepEqual({ type: 'QUERY', payload }, call.args[0]);
+});
+
+test('dispatches EXIT on dispatchQuit', (t) => {
+  const dispatch = nisemono.func();
+
+  const handlers = mapDispatchToProps(dispatch);
+  handlers.dispatchQuit();
+
+  t.true(dispatch.isCalled);
+  t.is(1, dispatch.calls.length);
+  const call1 = dispatch.calls[0];
+  t.deepEqual([{ type: 'EXIT' }], call1.args);
+});
+
+test('dispatches KEY_SEQUENCES for known keybinding in handleKeyDown', (t) => {
+  const dispatch = nisemono.func();
+  const SPC_KEY = 32;
+  const event = {
+    keyCode:        SPC_KEY,
+    ctrlKey:        true,
+    preventDefault: nisemono.func(),
+  };
+
+  const handlers = mapDispatchToProps(dispatch);
+  handlers.handleKeyDown(event);
+
+  t.true(dispatch.isCalled);
+  t.is(1, dispatch.calls.length);
+
+  const call = dispatch.calls[0];
+  t.is(1, call.args.length);
+  t.deepEqual({ type: 'KEY_SEQUENCE', payload: 'C-SPC' }, call.args[0]);
+
+  t.true(event.preventDefault.isCalled);
+});
+
+test('doesn\'t dispatch KEY_SEQUENCES for unknown keybinding in handleKeyDown', (t) => {
+  const dispatch = nisemono.func();
+  const A_KEY = 65;
+  const event = {
+    keyCode:        A_KEY,
+    preventDefault: nisemono.func(),
+  };
+
+  const handlers = mapDispatchToProps(dispatch);
+  handlers.handleKeyDown(event);
+
+  t.false(dispatch.isCalled);
+  t.false(event.preventDefault.isCalled);
 });
