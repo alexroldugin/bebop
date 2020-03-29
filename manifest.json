@@ -1,12 +1,12 @@
 {
   "name": "bebop",
-  "version": "0.1.7",
+  "version": "0.1.82",
   "manifest_version": 2,
   "description": "Offer emacs key-bindings and command line interface like helm",
   "author": "Hiroki Kumamoto",
   "applications": {
     "gecko": {
-      "id": "bebop@kumabook",
+      "id": "bebop@british-caledonia",
       "strict_min_version": "45.0"
     }
   },
