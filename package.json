@@ -34,6 +34,7 @@
     "multiprocess": true
   },
   "dependencies": {
+    "@ava/babel": "^1.0.1",
     "@babel/core": "^7.0.0-beta.47",
     "@babel/polyfill": "^7.0.0-beta.47",
     "@babel/preset-env": "^7.0.0-beta.47",
