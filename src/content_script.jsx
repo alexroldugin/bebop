@@ -84,7 +84,12 @@ setTimeout(() => {
 
 export function start({ store }) {
   // wait for the store to connect to the background page
-  return store.ready().then(() => {
+  return store
+    .ready()
+    .then(() => new Promise(function(resolve) {
+      setTimeout(resolve, 500);
+    }))
+    .then(() => {
     const overlays = reduce((doc) => {
       const element = (
         <Provider store={store}>
