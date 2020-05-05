@@ -4,7 +4,7 @@ bebop
 [![Build Status](https://travis-ci.org/alexroldugin/bebop.svg?branch=use_global_redux_store)](https://travis-ci.org/alexroldugin/bebop)
 [![Greenkeeper badge](https://badges.greenkeeper.io/kumabook/bebop.svg)](https://greenkeeper.io/)
 [![Coverage Status](https://coveralls.io/repos/github/alexroldugin/bebop/badge.svg?branch=use_global_redux_store)](https://coveralls.io/github/alexroldugin/bebop?branch=use_global_redux_store)
-[![Maintainability](https://api.codeclimate.com/v1/badges/739ecb729336efef52b8/maintainability)](https://codeclimate.com/github/kumabook/bebop/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/97e3a916b5e11ef37841/maintainability)](https://codeclimate.com/github/alexroldugin/bebop/maintainability)
 
 <img height="100" src="bebop.png" align="right">
 
