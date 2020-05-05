@@ -38,8 +38,8 @@ test.serial('<ThemeProvider /> should render its child', async (t) => {
     </Provider>
   );
   const wrapper = mount(element);
-  t.truthy(wrapper.find(ThemeProvider).children());
-  t.is(1, wrapper.find(ThemeProvider).children().length);
+  t.truthy(wrapper.find('ThemeProvider').children());
+  t.is(1, wrapper.find('ThemeProvider').children().length);
 });
 
 test.serial('<ThemeProvider /> sets up string data-theme attribute', async (t) => {
