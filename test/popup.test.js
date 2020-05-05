@@ -30,6 +30,8 @@ const delay  = ms => new Promise(resolve => setTimeout(resolve, ms));
 const ENTER = 13;
 const SPC   = 32;
 const TAB   = 9;
+const DOWN = 40;
+const UP = 38;
 
 actionInit();
 
@@ -135,19 +137,19 @@ test.serial('popup changes a candidate', async (t) => {
   const { length } = document.getElementsByClassName('candidate');
   t.is(getSelectedIndex(), 0);
 
-  keyDown(input, TAB);
+  keyDown(input, DOWN);
   await delay(WAIT_MS);
   t.is(getSelectedIndex(), 1);
 
-  keyDown(input, TAB, { s: true });
+  keyDown(input, UP);
   await delay(WAIT_MS);
   t.is(getSelectedIndex(), 0);
 
-  keyDown(input, TAB, { s: true });
+  keyDown(input, UP);
   await delay(WAIT_MS);
   t.is(getSelectedIndex(), length - 1);
 
-  keyDown(input, TAB);
+  keyDown(input, DOWN);
   await delay(WAIT_MS);
   t.is(getSelectedIndex(), 0);
 });
@@ -177,9 +179,9 @@ test.serial('popup selects action lists', async (t) => {
   const { document } = window;
   const input = document.querySelector('.commandInput');
   ReactTestUtils.Simulate.change(input);
-  keyDown(input, code('i'), { c: true });
+  keyDown(input, TAB);
   await delay(WAIT_MS);
-  keyDown(input, code('i'), { c: true });
+  keyDown(input, TAB);
   t.pass();
   await delay(WAIT_MS);
 });
