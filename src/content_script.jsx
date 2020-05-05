@@ -86,26 +86,26 @@ export function start({ store }) {
   // wait for the store to connect to the background page
   return store
     .ready()
-    .then(() => new Promise(function(resolve) {
+    .then(() => new Promise(((resolve) => {
       setTimeout(resolve, 500);
-    }))
+    })))
     .then(() => {
-    const overlays = reduce((doc) => {
-      const element = (
-        <Provider store={store}>
-          <LinksOverlay />
-          <CurrentLinkHighlighterOverlay />
-        </Provider>
-      );
-      const container = doc.createElement('div');
-      if (doc.body) {
-        doc.body.appendChild(container);
-        ReactDOM.render(element, container);
-      }
-      return { container };
+      const overlays = reduce((doc) => {
+        const element = (
+          <Provider store={store}>
+            <LinksOverlay />
+            <CurrentLinkHighlighterOverlay />
+          </Provider>
+        );
+        const container = doc.createElement('div');
+        if (doc.body) {
+          doc.body.appendChild(container);
+          ReactDOM.render(element, container);
+        }
+        return { container };
+      });
+      return overlays;
     });
-    return overlays;
-  });
 }
 
 export function stop({ container }) {
