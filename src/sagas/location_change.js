@@ -14,18 +14,18 @@ import actionsRootSaga from './actions';
 
 import commandReducers from '../reducers/command';
 import commandSetZoomRootSaga from './command-set-zoom';
-import commandManageCookiesSaga from './command-manage-cookies';
-import commandManageCookiesActionsSaga from './command-manage-cookies-actions';
+// import commandManageCookiesSaga from './command-manage-cookies';
+// import commandManageCookiesActionsSaga from './command-manage-cookies-actions';
 
 import getReducerInjectors from '../utils/reducer_injectors';
 import getSagaInjectors from '../utils/saga_injectors';
 
 const locationSagas = {
-  '/':                               homeRootSaga,
-  '/actions':                        actionsRootSaga,
-  '/command-set-zoom':               commandSetZoomRootSaga,
-  '/command-manage-cookies':         commandManageCookiesSaga,
-  '/command-manage-cookies-actions': commandManageCookiesActionsSaga,
+  '/':                 homeRootSaga,
+  '/actions':          actionsRootSaga,
+  '/command-set-zoom': commandSetZoomRootSaga,
+//  '/command-manage-cookies':         commandManageCookiesSaga,
+//  '/command-manage-cookies-actions': commandManageCookiesActionsSaga,
 };
 
 const locationReducers = {
