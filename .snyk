@@ -790,3 +790,17 @@ patch:
         patched: '2020-05-09T21:53:09.717Z'
     - stylelint > postcss-jsx > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
         patched: '2020-05-09T21:53:09.717Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/traverse > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helpers > @babel/traverse > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helpers > @babel/traverse > @babel/generator > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helpers > @babel/traverse > @babel/generator > @babel/types > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
+    - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2020-05-09T22:22:49.014Z'
