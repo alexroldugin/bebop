@@ -1588,3 +1588,26 @@ patch:
         patched: '2020-05-09T22:43:02.361Z'
     - stylelint > @stylelint/postcss-css-in-js > @babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
         patched: '2020-05-09T22:43:02.361Z'
+  SNYK-JS-LODASH-450202:
+    - enzyme > cheerio > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > addons-linter > cheerio > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > archiver > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > async > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > addons-linter > eslint-plugin-no-unsafe-innerhtml > eslint > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > archiver > archiver-utils > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > archiver > zip-stream > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > addons-linter > eslint-plugin-no-unsafe-innerhtml > eslint > inquirer > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > addons-linter > eslint-plugin-no-unsafe-innerhtml > eslint > table > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
+    - web-ext > firefox-profile > archiver > zip-stream > archiver-utils > lodash:
+        patched: '2020-05-09T22:58:56.352Z'
