@@ -60,8 +60,13 @@
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
+
+    "fake-indexeddb": "^2.1.1",
+    "history": "^4.10.1",
+
     "fake-indexeddb": "^2.1.1",
     "history": "^4.9.0",
+
     "is-url": "^1.2.2",
     "jsdom": "^15.0.0",
     "kiroku": "^0.0.4",
