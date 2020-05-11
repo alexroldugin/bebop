@@ -5007,10 +5007,10 @@ extsprintf@^1.2.0:
   resolved "https://registry.yarnpkg.com/extsprintf/-/extsprintf-1.4.0.tgz#e2689f8f356fad62cca65a3a91c5df5f9551692f"
   integrity sha1-4mifjzVvrWLMplo6kcXfX5VRaS8=
 
-fake-indexeddb@^2.0.4:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/fake-indexeddb/-/fake-indexeddb-2.0.5.tgz#829685232f79bcb9d182b8dd33934e9e5657ed18"
-  integrity sha512-C68kh3Ec3L6JZaTpRm6+TjY5AOs4bwtEOXazzb6733UL0F0jLR7j939e+TdlUmJdxumFQmXIzFhyLu5ZifQc5w==
+fake-indexeddb@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/fake-indexeddb/-/fake-indexeddb-2.1.1.tgz#0a72a53f3844ac76320d15e3f15860d4ce19f0ce"
+  integrity sha512-di5PzbH6/gleD4qcpxT1IDtNNMTKuEs+C2KeJDP1e4mwP2L0UY+vPcTkCdIGq8IcaUUph6IkCrUZJvtpFUdhfg==
   dependencies:
     core-js "^2.4.1"
     realistic-structured-clone "^2.0.1"
