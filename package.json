@@ -79,7 +79,7 @@
     "reselect": "^4.0.0",
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^18.0.0",
-    "uuid": "^3.1.0",
+    "uuid": "^3.4.0",
     "web-ext": "^4.2.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
