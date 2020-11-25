@@ -91,7 +91,7 @@
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^4.42.1",
-    "snyk": "^1.319.2"
+    "snyk": "^1.425.4"
   },
   "ava": {
     "babel": {
