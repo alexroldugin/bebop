@@ -90,7 +90,7 @@
     "web-ext": "^4.2.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
-    "webpack": "^4.42.1",
+    "webpack": "^5.0.0",
     "snyk": "^1.319.2"
   },
   "ava": {
