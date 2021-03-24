@@ -84,14 +84,14 @@
     "redux": "^4.0.5",
     "redux-saga": "^0.16.0",
     "reselect": "^4.0.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^13.8.0",
     "stylelint-config-standard": "^18.3.0",
     "uuid": "^3.4.0",
     "web-ext": "^4.2.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^4.42.1",
-    "snyk": "^1.319.2"
+    "snyk": "^1.465.0"
   },
   "ava": {
     "babel": {
