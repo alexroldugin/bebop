@@ -54,7 +54,7 @@
 
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "eslint": "^5.16.0",
+    "eslint": "^7.0.0",
 
     "eslint-config-airbnb": "^17.1.1",
     "eslint-plugin-import": "^2.20.2",
@@ -71,7 +71,7 @@
     "jsdom": "^15.0.0",
     "kiroku": "^0.0.4",
     "nisemono": "^0.0.3",
-    "nyc": "^14.0.0",
+    "nyc": "^15.0.0",
     "prop-types": "^15.6.0",
     "raf": "^3.4.0",
     "react": "^16.13.1",
@@ -84,14 +84,14 @@
     "redux": "^4.0.5",
     "redux-saga": "^0.16.0",
     "reselect": "^4.0.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^13.7.0",
     "stylelint-config-standard": "^18.3.0",
     "uuid": "^3.4.0",
-    "web-ext": "^4.2.0",
+    "web-ext": "^5.0.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^4.42.1",
-    "snyk": "^1.319.2"
+    "snyk": "^1.465.0"
   },
   "ava": {
     "babel": {
