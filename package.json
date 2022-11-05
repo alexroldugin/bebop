@@ -42,7 +42,7 @@
     "@babel/preset-env": "^7.9.6",
     "@babel/preset-react": "^7.9.4",
     "@babel/register": "^7.9.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^8.2.4",
 
     "babel-plugin-istanbul": "^5.2.0",
 
@@ -90,7 +90,7 @@
     "web-ext": "^4.2.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
-    "webpack": "^4.42.1",
+    "webpack": "^5.0.0",
     "snyk": "^1.319.2"
   },
   "ava": {
