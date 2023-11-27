@@ -15,6 +15,7 @@ jobs:
         API_KEY: ${{ secrets.API_KEY }}
         API_SECRET: ${{ secrets.API_SECRET }}
       run: |
+        node -v
         npm install
         npm run release:firefox || true
     - uses: actions/upload-artifact@v1
