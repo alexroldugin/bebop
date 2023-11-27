@@ -17,6 +17,7 @@ jobs:
         EXTENSION_ID: ${{ secrets.EXTENSION_ID }}
         API_KEY: ${{ secrets.API_KEY }}
         API_SECRET: ${{ secrets.API_SECRET }}
+        NODE_OPTIONS: --openssl-legacy-provider
       run: |
         node -v
         npm install
