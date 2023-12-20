@@ -43,7 +43,7 @@
     "@ava/babel": "^1.0.1",
     "@babel/core": "^7.9.0",
     "@babel/polyfill": "^7.8.7",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-env": "^7.22.0",
     "@babel/preset-react": "^7.9.4",
     "@babel/register": "^7.9.0",
     "babel-loader": "^8.1.0",
@@ -62,7 +62,7 @@
     "fake-indexeddb": "^2.1.1",
     "history": "^4.9.0",
     "is-url": "^1.2.2",
-    "jsdom": "^15.0.0",
+    "jsdom": "^16.6.0",
     "kiroku": "^0.0.4",
     "nisemono": "^0.0.3",
     "nyc": "^14.0.0",
@@ -78,14 +78,14 @@
     "redux": "^4.0.5",
     "redux-saga": "^0.16.0",
     "reselect": "^4.0.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^14.0.0",
     "stylelint-config-standard": "^18.3.0",
     "uuid": "^3.4.0",
-    "web-ext": "^4.2.0",
+    "web-ext": "^6.6.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^5.61.0",
-    "snyk": "^1.319.2"
+    "snyk": "^1.996.0"
   },
   "ava": {
     "babel": {
