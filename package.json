@@ -65,7 +65,7 @@
     "jsdom": "^15.0.0",
     "kiroku": "^0.0.4",
     "nisemono": "^0.0.3",
-    "nyc": "^14.0.0",
+    "nyc": "^15.0.0",
     "prop-types": "^15.6.0",
     "raf": "^3.4.0",
     "react": "^16.13.1",
@@ -81,11 +81,11 @@
     "stylelint": "^13.0.0",
     "stylelint-config-standard": "^18.3.0",
     "uuid": "^3.4.0",
-    "web-ext": "^4.2.0",
+    "web-ext": "^6.0.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^5.61.0",
-    "snyk": "^1.319.2"
+    "snyk": "^1.1297.3"
   },
   "ava": {
     "babel": {
