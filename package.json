@@ -52,7 +52,7 @@
     "cross-env": "^5.2.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
-    "eslint": "^5.16.0",
+    "eslint": "^9.26.0",
     "eslint-config-airbnb": "^17.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
@@ -78,14 +78,14 @@
     "redux": "^4.0.5",
     "redux-saga": "^0.16.0",
     "reselect": "^4.0.0",
-    "stylelint": "^13.0.0",
+    "stylelint": "^14.0.0",
     "stylelint-config-standard": "^18.3.0",
     "uuid": "^3.4.0",
-    "web-ext": "^4.2.0",
+    "web-ext": "^9.2.0",
     "webext-redux": "^2.1.2",
     "webextension-polyfill": "0.6.0",
     "webpack": "^5.61.0",
-    "snyk": "^1.319.2"
+    "snyk": "^1.996.0"
   },
   "ava": {
     "babel": {
